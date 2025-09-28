@@ -3,25 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>星河探索 - 天文科普网站</title>
+  <title>星河探索 - 沉浸式天文科普网站</title>
   <link rel="stylesheet" href="css/index.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
 </head>
 <body>
-  <!-- 视频背景层 -->
   <video autoplay muted loop id="bg-video">
     <source src="videos/space-bg.mp4" type="video/mp4"/>
     您的浏览器不支持视频背景
   </video>
+  <div class="video-overlay"></div> 
 
-  <!-- 星空背景 -->
-  <div class="stars-bg" id="stars-bg"></div>
+  <div class="stars-bg"></div>
 
-  <!-- 导航栏 -->
   <header class="nav-header">
     <nav class="nav-container">
       <a href="#" class="logo">
-        <img src="images/logo.png" alt="logo" class="logo-img"/>
+        <img src="images/logo.png" alt="星河探索 Logo" class="logo-img"/>
         <span class="logo-text">星河探索</span>
       </a>
       <div class="nav-menu">
@@ -31,80 +30,75 @@
     </nav>
   </header>
 
-  <!-- 主体 -->
   <main class="main-container">
-    <!-- Hero 区 -->
     <section class="hero-section fade-in">
       <h1 class="hero-title">探索无垠宇宙</h1>
-      <p class="hero-subtitle">🌟 感受星辰魅力，邂逅浩瀚宇宙 🌟</p>
+      <p class="hero-subtitle">🌌 感受星辰魅力，邂逅浩瀚宇宙 🛰️</p>
       <p class="hero-description">
         从遥远的星系到神秘的黑洞，从古老的星座传说到最新的天文发现，
         一起踏上这场壮丽的宇宙之旅。
       </p>
     </section>
 
-    <!-- 功能模块 -->
     <section id="modules" class="modules-grid">
       <div class="module-card fade-in">
-        <img src="images/module-astronomy.jpg" class="module-bg"/>
+        <img src="images/module-astronomy.jpg" alt="天文知识插画" class="module-bg"/>
         <div class="module-gradient"></div>
         <div class="module-content">
-          <div class="module-icon">🪐</div>
+          <i class="module-icon fas fa-globe-americas"></i>
           <h2 class="module-title">天文知识</h2>
           <p class="module-desc">深入了解太阳系、恒星、星系和宇宙的基础知识</p>
         </div>
       </div>
 
       <div class="module-card fade-in">
-        <img src="images/module-news.jpg" class="module-bg"/>
+        <img src="images/module-news.jpg" alt="火箭发射新闻配图" class="module-bg"/>
         <div class="module-gradient"></div>
         <div class="module-content">
-          <div class="module-icon">📡</div>
+          <i class="module-icon fas fa-rocket"></i>
           <h2 class="module-title">最新时讯</h2>
           <p class="module-desc">掌握天文发现、太空任务、天象预报的最新动态</p>
         </div>
       </div>
 
       <div class="module-card fade-in">
-        <img src="images/module-gallery.jpg" class="module-bg"/>
+        <img src="images/module-gallery.jpg" alt="星系图集" class="module-bg"/>
         <div class="module-gradient"></div>
         <div class="module-content">
-          <div class="module-icon">🌌</div>
-          <h2 class="module-title">太空漫步</h2>
-          <p class="module-desc">欣赏哈勃、韦伯拍摄的壮丽宇宙图景</p>
+          <i class="module-icon fas fa-camera-retro"></i>
+          <h2 class="module-title">太空图集</h2>
+          <p class="module-desc">欣赏哈勃、韦伯拍摄的壮丽宇宙图景和官方高清照片</p>
         </div>
       </div>
 
       <div class="module-card fade-in">
-        <img src="images/module-games.jpg" class="module-bg"/>
+        <img src="images/module-games.jpg" alt="趣味游戏" class="module-bg"/>
         <div class="module-gradient"></div>
         <div class="module-content">
-          <div class="module-icon">🎮</div>
-          <h2 class="module-title">趣味游戏</h2>
-          <p class="module-desc">通过互动游戏寓教于乐，探索星空奥秘</p>
+          <i class="module-icon fas fa-gamepad"></i>
+          <h2 class="module-title">趣味互动</h2>
+          <p class="module-desc">通过互动游戏寓教于乐，探索星空奥秘和星座识别</p>
         </div>
       </div>
     </section>
 
-    <!-- AI 助手 -->
     <section id="ai" class="ai-chat-section fade-in">
-      <h2 class="ai-title">天文小助手</h2>
+      <h2 class="ai-title">🪐 天文AI助手</h2>
       <div class="ai-helper">
         <img src="images/ai-avatar.png" alt="AI助手" class="ai-avatar"/>
         <p class="ai-helper-desc">有问题？交给我吧！</p>
       </div>
       <div class="ai-input-container">
         <input type="text" class="ai-input" placeholder="请输入您的天文问题..." id="ai-question-input"/>
-        <button class="ai-submit-btn" onclick="submitQuestion()">🚀 提问</button>
+        <button class="ai-submit-btn" onclick="submitQuestion()"> 提问</button>
       </div>
-      <div id="ai-response" class="ai-response">
+      <div id="ai-response" class="ai-response" style="display: none;">
         <p style="color:#64b5f6;font-weight:bold;">AI助手回答：</p>
         <p id="ai-answer"></p>
       </div>
     </section>
   </main>
 
-  <!-- JS -->
   <script src="js/main.js"></script>
 </body>
 </html>
