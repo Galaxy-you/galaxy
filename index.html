@@ -14,9 +14,7 @@
     您的浏览器不支持视频背景
   </video>
   <div class="video-overlay"></div> 
-
   <div class="stars-bg"></div>
-
   <header class="nav-header">
     <nav class="nav-container">
       <a href="#" class="logo">
@@ -32,12 +30,10 @@
 
   <main class="main-container">
     <section class="hero-section fade-in">
-      <h1 class="hero-title">探索无垠宇宙</h1>
-      <p class="hero-subtitle">🌌 感受星辰魅力，邂逅浩瀚宇宙 🛰️</p>
-      <p class="hero-description">
-        从遥远的星系到神秘的黑洞，从古老的星座传说到最新的天文发现，
-        一起踏上这场壮丽的宇宙之旅。
-      </p>
+      <div class="hero-content">
+        <!-- 探测数据轮播区 -->
+        <div class="explore-stats"></div>
+      </div>
     </section>
 
     <section id="modules" class="modules-grid">
@@ -48,9 +44,9 @@
           <i class="module-icon fas fa-globe-americas"></i>
           <h2 class="module-title">天文知识</h2>
           <p class="module-desc">深入了解太阳系、恒星、星系和宇宙的基础知识</p>
+          <button class="explore-btn">开始学习</button>
         </div>
       </div>
-
       <div class="module-card fade-in">
         <img src="images/module-news.jpg" alt="火箭发射新闻配图" class="module-bg"/>
         <div class="module-gradient"></div>
@@ -58,19 +54,9 @@
           <i class="module-icon fas fa-rocket"></i>
           <h2 class="module-title">最新时讯</h2>
           <p class="module-desc">掌握天文发现、太空任务、天象预报的最新动态</p>
+          <button class="explore-btn">了解更多</button>
         </div>
       </div>
-
-      <div class="module-card fade-in">
-        <img src="images/module-gallery.jpg" alt="星系图集" class="module-bg"/>
-        <div class="module-gradient"></div>
-        <div class="module-content">
-          <i class="module-icon fas fa-camera-retro"></i>
-          <h2 class="module-title">太空图集</h2>
-          <p class="module-desc">欣赏哈勃、韦伯拍摄的壮丽宇宙图景和官方高清照片</p>
-        </div>
-      </div>
-
       <div class="module-card fade-in">
         <img src="images/module-games.jpg" alt="趣味游戏" class="module-bg"/>
         <div class="module-gradient"></div>
@@ -78,26 +64,85 @@
           <i class="module-icon fas fa-gamepad"></i>
           <h2 class="module-title">趣味互动</h2>
           <p class="module-desc">通过互动游戏寓教于乐，探索星空奥秘和星座识别</p>
+          <button class="explore-btn">开始体验</button>
         </div>
       </div>
     </section>
 
     <section id="ai" class="ai-chat-section fade-in">
-      <h2 class="ai-title">🪐 天文AI助手</h2>
-      <div class="ai-helper">
-        <img src="images/ai-avatar.png" alt="AI助手" class="ai-avatar"/>
-        <p class="ai-helper-desc">有问题？交给我吧！</p>
-      </div>
-      <div class="ai-input-container">
-        <input type="text" class="ai-input" placeholder="请输入您的天文问题..." id="ai-question-input"/>
-        <button class="ai-submit-btn" onclick="submitQuestion()"> 提问</button>
-      </div>
-      <div id="ai-response" class="ai-response" style="display: none;">
-        <p style="color:#64b5f6;font-weight:bold;">AI助手回答：</p>
-        <p id="ai-answer"></p>
+      <div class="ai-container hover-float">
+        <h2 class="ai-title">🪐 天文AI助手</h2>
+        <div class="ai-helper">
+          <img src="images/ai-avatar.png" alt="AI助手" class="ai-avatar floating"/>
+          <p class="ai-helper-desc pulse">有问题？交给我吧！</p>
+        </div>
+        <div class="ai-input-container">
+          <input type="text" class="ai-input" placeholder="请输入您的天文问题..." id="ai-question-input"/>
+          <button class="ai-submit-btn" onclick="submitQuestion()">
+            <i class="fas fa-paper-plane"></i> 提问
+          </button>
+        </div>
+        <div id="ai-response" class="ai-response" style="display: none;">
+          <p class="response-header">AI助手回答：</p>
+          <p id="ai-answer"></p>
+        </div>
       </div>
     </section>
   </main>
+  
+  <!-- 直接在HTML中写入数据和动画JS -->
+  <script>
+  // 探索数据数组，直接写在HTML里
+  const statsData = [
+    { "title": "已发现系外行星", "value": 7000, "unit": "颗", "desc": "截至目前已确认的数量，仅占银河系数千亿行星的极小部分。" },
+    { "title": "已知恒星", "value": 100000000000, "unit": "颗", "desc": "这是对银河系恒星数量的保守估计，可观测宇宙中的恒星数量更多。" },
+    { "title": "已发射人造卫星", "value": 15000, "unit": "颗", "desc": "人类自 1957 年以来累计发射的数量，其中约 9700 颗仍在轨道上运行。" },
+    { "title": "已探测的黑洞", "value": 10000, "unit": "个", "desc": "科学家已确认的黑洞数量，远低于银河系中估计存在的数百万至上亿个黑洞。" },
+    { "title": "可观测宇宙直径", "value": 93000000000, "unit": "光年", "desc": "这是当前科学估算的人类可观测到的宇宙范围的直径。" },
+    { "title": "已登陆外星天体", "value": 7, "unit": "个", "desc": "人类探测器已成功着陆于月球、火星等 7 个主要外星天体表面。" },
+    { "title": "已发现的星系", "value": 2000000000, "unit": "个", "desc": "哈勃等望远镜已发现约 20 亿个星系，宇宙中星系总数估计高达 2 万亿个。" },
+    { "title": "国际空间站运行时间", "value": 26, "unit": "年", "desc": "国际空间站自 1998 年开始组装，至今已运行超过 26 年。" },
+    { "title": "哈勃太空望远镜拍摄照片数量", "value": 1500000, "unit": "张", "desc": "哈勃望远镜累计拍摄了超过 150 万个天体目标，提供了宝贵资料。" }
+  ];
+  const statsContainer = document.querySelector('.explore-stats');
+  let currentIndex = 0;
+  function animateNumber(el, target, duration = 1200) {
+    const start = 0;
+    const startTime = performance.now();
+    function update(now) {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const value = Math.floor(progress * (target - start) + start);
+      el.textContent = value.toLocaleString();
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        el.textContent = target.toLocaleString();
+      }
+    }
+    requestAnimationFrame(update);
+  }
+  function renderStat(data) {
+    statsContainer.innerHTML = `
+      <div class="explore-title">${data.title}</div>
+      <div style="display:flex;align-items:center;justify-content:center;">
+        <span class="explore-number"></span>
+        <span class="explore-unit">${data.unit}</span>
+      </div>
+      <div class="explore-desc">${data.desc}</div>
+    `;
+    const numberEl = statsContainer.querySelector('.explore-number');
+    animateNumber(numberEl, data.value);
+  }
+  function nextStat() {
+    renderStat(statsData[currentIndex]);
+    currentIndex = (currentIndex + 1) % statsData.length;
+  }
+  // 页面加载后开始轮播
+  window.addEventListener('DOMContentLoaded', function() {
+    nextStat();
+    setInterval(nextStat, 4000);
+  });
+  </script>
 
   <script src="js/main.js"></script>
 </body>
