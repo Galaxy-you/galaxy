@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>黑洞引力模拟</title>
   <style>
+    /* ... (CSS Styles remain the same) ... */
     * {
       margin: 0;
       padding: 0;
@@ -285,6 +286,7 @@
                style="width: 120px; cursor: pointer;">
         <span id="particle-value" style="min-width: 35px; text-align: right;">100</span>
     </div>
+    <button class="btn" onclick="exitSimulation()">退出游戏</button>
   </div>
 
   <canvas id="c"></canvas>
@@ -747,6 +749,11 @@ Particle.prototype = (function(o) {
     document.getElementById('interference-status').textContent = status;
     // 修改按钮文字
     event.target.textContent = GravityPoint.interferenceToPoint ? '关闭引力' : '开启引力';
+    };
+
+    // 【修改】退出游戏函数：直接跳转到 games.html
+    window.exitSimulation = function() {
+        window.location.href = 'games.html';
     };
 
     control = {

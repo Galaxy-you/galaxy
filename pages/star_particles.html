@@ -102,6 +102,33 @@ html, body {
     font-weight: bold;
 }
 
+/* 新增的退出按钮样式 */
+.exit-button {
+    position: absolute;
+    top: 30px;
+    right: 200px; /* 放在计数器旁边 */
+    color: #64c8ff;
+    font-size: 15px;
+    z-index: 15;
+    background: rgba(15, 25, 45, 0.7);
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(100, 200, 255, 0.2);
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.exit-button:hover {
+    background: rgba(100, 200, 255, 0.2);
+    color: #fff;
+}
+
+
 .shape-counter {
     position: absolute;
     top: 30px;              /* 改：从100px改为30px */
@@ -121,11 +148,15 @@ html, body {
     .shape-info p { font-size: 13px; line-height: 1.5; }    /* 改 */
     .tip-bar { font-size: 13px; padding: 12px 20px; left: 20px; top: 20px; }
     .shape-counter { top: 20px; right: 20px; font-size: 14px; }
+    /* 响应式调整退出按钮 */
+    .exit-button { top: 20px; right: 130px; font-size: 13px; padding: 10px 15px; }
 }
 
 </style>
 </head>
 <body>
+
+<button class="exit-button" onclick="exitGame()">退出游戏</button>
 
 <div class="shape-counter">
     形态 <span id="current-shape">1</span> / 8
@@ -140,6 +171,11 @@ html, body {
 <div id="jsi-particle-container" class="container"></div>
 
 <script>
+// 【新增】退出游戏函数：直接跳转到 games.html
+window.exitGame = function() {
+    window.location.href = 'games.html';
+};
+
 var shapeDescriptions = [
     {
         name: '球体星团',
