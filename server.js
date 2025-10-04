@@ -5,7 +5,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('.')); 
+app.use(express.static('public'));
 
 // 密钥从环境变量中获取
 const API_KEY = process.env.DASHSCOPE_API_KEY; 
