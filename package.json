@@ -1,0 +1,27 @@
+{
+  "name": "galaxy",
+  "version": "1.0.0",
+  "description": "天文网站",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Galaxy-you/galaxy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Galaxy-you/galaxy/issues"
+  },
+  "homepage": "https://github.com/Galaxy-you/galaxy#readme",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "node-fetch": "^3.3.2"
+  }
+}

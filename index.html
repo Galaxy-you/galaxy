@@ -75,10 +75,11 @@
           <img src="images/ai-avatar.png" alt="AI助手" class="ai-avatar floating"/>
           <p class="ai-helper-desc pulse">有问题？交给我吧！</p>
         </div>
+        <!-- 这里会动态插入对话历史区域 -->
         <div class="ai-input-container">
           <input type="text" class="ai-input" placeholder="请输入您的天文问题..." id="ai-question-input"/>
           <button class="ai-submit-btn" onclick="submitQuestion()">
-            <i class="fas fa-paper-plane"></i> 提问
+            <i class="fas fa-paper-plane"></i> 发送
           </button>
         </div>
         <div id="ai-response" class="ai-response" style="display: none;">
@@ -144,5 +145,7 @@
   </script>
 
   <script src="js/main.js"></script>
+  <script src="js/ai-chat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html>

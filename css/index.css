@@ -374,3 +374,68 @@ body {
   from { opacity: 0; transform: translateY(20px);}
   to { opacity: 1; transform: translateY(0);}
 }
+
+/* 聊天历史样式 */
+.chat-history {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+/* 消息样式 */
+.message {
+  margin-bottom: 15px;
+  padding: 12px 15px;
+  border-radius: 10px;
+  animation: fadeIn 0.3s;
+  text-align: left; /* 确保文本左对齐 */
+  max-width: 100%;
+}
+
+/* 用户消息 */
+.user-message {
+  background: rgba(25, 118, 210, 0.2);
+  border-left: 4px solid #1976d2;
+  margin-left: 20px;
+  margin-right: 5px;
+}
+
+/* AI助手消息 */
+.assistant-message {
+  background: rgba(13, 27, 42, 0.4);
+  border-left: 4px solid #64b5f6;
+  margin-right: 20px;
+  margin-left: 5px;
+}
+
+/* 消息头部样式 */
+.message-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #90caf9;
+}
+
+.message-header i {
+  margin-right: 8px;
+}
+
+/* 消息内容样式 */
+.message-content {
+  line-height: 1.6;
+  color: #e0e6ed;
+  text-align: left; /* 再次确保文本左对齐 */
+  white-space: pre-wrap; /* 保留换行符 */
+  word-break: break-word; /* 防止长词溢出 */
+}
+
+/* 删除多余的AI回答区域 */
+.ai-response {
+  display: none !important;
+}
+
+/* 加载动画 */
+.loading .message-content {
+  opacity: 0.7;
+}
