@@ -1,0 +1,507 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>星空粒子科普游戏</title>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<style>
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    background: radial-gradient(ellipse at center, #0a1628 0%, #020510 100%);
+}
+.container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+.particle-canvas {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.page-title {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(100, 200, 255, 0.8);
+    z-index: 12;
+    pointer-events: none;
+}
+
+.shape-info {
+    position: absolute;
+    top: auto;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 25, 45, 0.85);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(100, 200, 255, 0.3);
+    border-radius: 20px 20px 0 0;
+    padding: 15px 25px;        /* 改：从30px 40px改小 */
+    max-width: 600px;          /* 改：增加最大宽度，让文字横向展开 */
+    text-align: center;
+    z-index: 10;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.shape-info.active {
+    opacity: 1;
+}
+
+.shape-info h2 {
+    color: #64c8ff;
+    font-size: 22px;           /* 改：从32px改小 */
+    margin: 0 0 10px 0;        /* 改：从20px改小 */
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(100, 200, 255, 0.5);
+}
+
+.shape-info p {
+    color: #e2eaf7;
+    font-size: 14px;           /* 改：从16px改小 */
+    line-height: 1.6;          /* 改：从1.8改小 */
+    margin: 0;
+}
+
+.tip-bar {
+    position: absolute;
+    left: 40px;           /* 改：左上角 */
+    top: 30px;            /* 改：顶部30px */
+    bottom: auto;         /* 改：取消bottom定位 */
+    transform: none;      /* 改：取消居中变换 */
+    background: rgba(15, 25, 45, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(100, 200, 255, 0.2);
+    border-radius: 12px;
+    color: #e2eaf7;
+    padding: 15px 30px;
+    font-size: 15px;
+    z-index: 15;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.tip-bar span {
+    color: #64c8ff;
+    font-weight: bold;
+}
+
+.shape-counter {
+    position: absolute;
+    top: 30px;              /* 改：从100px改为30px */
+    right: 40px;
+    color: #64c8ff;
+    font-size: 18px;
+    z-index: 15;
+    background: rgba(15, 25, 45, 0.7);
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(100, 200, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+    .shape-info { max-width: 90vw; padding: 12px 20px; }  /* 改：进一步压缩 */
+    .shape-info h2 { font-size: 18px; margin: 0 0 8px 0; }  /* 改 */
+    .shape-info p { font-size: 13px; line-height: 1.5; }    /* 改 */
+    .tip-bar { font-size: 13px; padding: 12px 20px; left: 20px; top: 20px; }
+    .shape-counter { top: 20px; right: 20px; font-size: 14px; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="shape-counter">
+    形态 <span id="current-shape">1</span> / 8
+</div>
+
+<div id="shape-info-container"></div>
+
+<div class="tip-bar">
+    <span>提示：</span>点击页面切换形态 | 移动鼠标旋转视角
+</div>
+
+<div id="jsi-particle-container" class="container"></div>
+
+<script>
+var shapeDescriptions = [
+    {
+        name: '球体星团',
+        description: '模拟球状星团的分布形态。球状星团是由数十万颗恒星组成的球形天体，它们在引力作用下聚集成球状，是宇宙中最古老的天体系统之一。'
+    },
+    {
+        name: '环形星云',
+        description: '类似土星环或黑洞吸积盘的环状结构。当物质在高速旋转的天体周围运动时，会形成壮观的环状分布，这是宇宙中常见的美丽景观。'
+    },
+    {
+        name: '锥形喷流',
+        description: '模拟黑洞或年轻恒星的喷流现象。超大质量黑洞会从两极喷射出高能粒子流，这些喷流可以延伸数千光年，是宇宙中最壮观的现象之一。'
+    },
+    {
+        name: '花瓶星云',
+        description: '类似行星状星云的复杂结构。当恒星演化到晚期时，会抛射出外层物质，形成形态各异的星云结构，展现宇宙的对称之美。'
+    },
+    {
+        name: '螺旋星系',
+        description: '模拟旋涡星系的螺旋臂结构。银河系就是一个典型的螺旋星系，数千亿颗恒星沿着优美的螺旋臂分布，展现了宇宙的动态之美。'
+    },
+    {
+        name: '双锥沙漏',
+        description: '类似双极行星状星云的形态。某些星云呈现出沙漏状的双锥结构，这是恒星在演化过程中受到磁场和自转影响形成的独特形态。'
+    },
+    {
+        name: '立方晶格',
+        description: '模拟宇宙大尺度结构中的纤维状分布。宇宙中的星系并非随机分布，而是形成网状和立方晶格般的大尺度结构。'
+    },
+    {
+        name: '椭球星系',
+        description: '模拟椭圆星系的形态。椭圆星系是宇宙中最常见的星系类型之一，呈现椭球状分布，内部恒星轨道较为随机。'
+    }
+];
+
+var RENDERER = {
+    PARTICLE_COUNT : 1200,
+    PARTICLE_RADIUS : 1.3,
+    MAX_ROTATION_ANGLE : Math.PI / 60,
+    TRANSLATION_COUNT : 3000,
+
+    init : function(strategy){
+        this.setParameters(strategy);
+        this.createParticles();
+        this.setupFigure();
+        this.reconstructMethod();
+        this.bindEvent();
+        this.drawFigure();
+        this.createShapeInfo();
+    },
+    setParameters : function(strategy){
+        this.$window = $(window);
+        this.$container = $('#jsi-particle-container');
+        this.width = this.$container.width();
+        this.height = this.$container.height();
+        this.$canvas = $('<canvas />').addClass('particle-canvas').attr({width : this.width, height : this.height}).appendTo(this.$container);
+        this.context = this.$canvas.get(0).getContext('2d');
+        this.center = {x : this.width / 2, y : this.height / 2};
+        this.rotationX = this.MAX_ROTATION_ANGLE;
+        this.rotationY = this.MAX_ROTATION_ANGLE;
+        this.strategyIndex = 0;
+        this.translationCount = 0;
+        this.theta = 0;
+        this.strategies = strategy.getStrategies();
+        this.particles = [];
+    },
+    createParticles : function(){
+        for(var i = 0; i < this.PARTICLE_COUNT; i++){
+            this.particles.push(new PARTICLE(this.center));
+        }
+    },
+    reconstructMethod : function(){
+        this.setupFigure = this.setupFigure.bind(this);
+        this.drawFigure = this.drawFigure.bind(this);
+        this.changeAngle = this.changeAngle.bind(this);
+        this.handleUserInteraction = this.handleUserInteraction.bind(this);
+    },
+    bindEvent : function(){
+        this.$container.on('click', this.handleUserInteraction);
+        this.$container.on('mousemove', this.changeAngle);
+    },
+    createShapeInfo : function(){
+        var container = $('#shape-info-container');
+        for(var i = 0; i < shapeDescriptions.length; i++){
+            var info = $('<div class="shape-info" id="shape-info-' + i + '">' +
+                '<h2>' + shapeDescriptions[i].name + '</h2>' +
+                '<p>' + shapeDescriptions[i].description + '</p>' +
+                '</div>');
+            container.append(info);
+        }
+        $('#shape-info-0').addClass('active');
+    },
+    updateShapeInfo : function(){
+        $('.shape-info').removeClass('active');
+        $('#shape-info-' + this.strategyIndex).addClass('active');
+        $('#current-shape').text(this.strategyIndex + 1);
+    },
+    handleUserInteraction: function() {
+        this.setupFigure();
+    },
+    changeAngle : function(event){
+        var offset = this.$container.offset(),
+            x = event.clientX - offset.left + this.$window.scrollLeft(),
+            y = event.clientY - offset.top + this.$window.scrollTop();
+        this.rotationX = (this.center.y - y) / this.center.y * this.MAX_ROTATION_ANGLE;
+        this.rotationY = (this.center.x - x) / this.center.x * this.MAX_ROTATION_ANGLE;
+    },
+    setupFigure : function(){
+        for(var i = 0, length = this.particles.length; i < length; i++){
+            this.particles[i].setAxis(this.strategies[this.strategyIndex]());
+        }
+        this.updateShapeInfo();
+        if(++this.strategyIndex == this.strategies.length){
+            this.strategyIndex = 0;
+        }
+        this.translationCount = 0;
+    },
+    drawFigure : function(){
+        requestAnimationFrame(this.drawFigure);
+        this.context.fillStyle = 'rgba(2, 5, 16, 0.15)';
+        this.context.fillRect(0, 0, this.width, this.height);
+
+        for(var i = 0, length = this.particles.length; i < length; i++){
+            var axis = this.particles[i].getAxis2D(this.theta);
+            this.context.beginPath();
+            this.context.fillStyle = axis.color;
+            this.context.arc(axis.x, axis.y, this.PARTICLE_RADIUS, 0, Math.PI * 2, false);
+            this.context.fill();
+        }
+        this.theta++;
+        this.theta %= 360;
+
+        for(var i = 0, length = this.particles.length; i < length; i++){
+            this.particles[i].rotateX(this.rotationX);
+            this.particles[i].rotateY(this.rotationY);
+        }
+        this.translationCount++;
+        this.translationCount %= this.TRANSLATION_COUNT;
+
+        if(this.translationCount == 0){
+            this.setupFigure();
+        }
+    }
+};
+
+var STRATEGY = {
+    SCATTER_RADIUS : 150,
+    CONE_ASPECT_RATIO : 1.5,
+
+    getStrategies : function(){
+        var strategies = [];
+        strategies.push(this.createSphere.bind(this));
+        strategies.push(this.createTorus.bind(this));
+        strategies.push(this.createCone.bind(this));
+        strategies.push(this.createVase.bind(this));
+        strategies.push(this.createSpiral.bind(this));
+        strategies.push(this.createDoubleCone.bind(this));
+        strategies.push(this.createCube.bind(this));
+        strategies.push(this.createEllipsoid.bind(this));
+        return strategies;
+    },
+    createSphere : function(){
+        var cosTheta = Math.random() * 2 - 1,
+            sinTheta = Math.sqrt(1 - cosTheta * cosTheta),
+            phi = Math.random() * 2 * Math.PI;
+        return {
+            x : this.SCATTER_RADIUS * sinTheta * Math.cos(phi),
+            y : this.SCATTER_RADIUS * sinTheta * Math.sin(phi),
+            z : this.SCATTER_RADIUS * cosTheta,
+            hue : Math.round(phi / Math.PI * 30 + 180)
+        };
+    },
+    createTorus : function(){
+        var theta = Math.random() * Math.PI * 2,
+            x = this.SCATTER_RADIUS + this.SCATTER_RADIUS / 6 * Math.cos(theta),
+            y = this.SCATTER_RADIUS / 6 * Math.sin(theta),
+            phi = Math.random() * Math.PI * 2;
+        return {
+            x : x * Math.cos(phi),
+            y : y,
+            z : x * Math.sin(phi),
+            hue : Math.round(phi / Math.PI * 30 + 200)
+        };
+    },
+    createCone : function(){
+        var status = Math.random() > 1 / 3,
+            x, y,
+            phi = Math.random() * Math.PI * 2,
+            rate = Math.tan(30 / 180 * Math.PI) / this.CONE_ASPECT_RATIO;
+        if(status){
+            y = this.SCATTER_RADIUS * (1 - Math.random() * 2);
+            x = Math.abs(this.SCATTER_RADIUS - Math.abs(y)) * rate;
+        }else{
+            y = -this.SCATTER_RADIUS;
+            x = this.SCATTER_RADIUS * 2 * rate * Math.random();
+        }
+        return {
+            x : x * Math.cos(phi),
+            y : y,
+            z : x * Math.sin(phi),
+            hue : Math.round(phi / Math.PI * 30 + 280)
+        };
+    },
+    createVase : function(){
+        var theta = Math.random() * Math.PI,
+            x = Math.abs(this.SCATTER_RADIUS * Math.cos(theta) / 2) + this.SCATTER_RADIUS / 8,
+            y = this.SCATTER_RADIUS * Math.cos(theta) * 1.2,
+            phi = Math.random() * Math.PI * 2;
+        return {
+            x : x * Math.cos(phi),
+            y : y,
+            z : x * Math.sin(phi),
+            hue : Math.round(phi / Math.PI * 30 + 320)
+        };
+    },
+    createSpiral : function(){
+        var t = Math.random() * Math.PI * 4,
+            r = this.SCATTER_RADIUS * (1 - t / (Math.PI * 4)) * 0.8,
+            x = r * Math.cos(t),
+            z = r * Math.sin(t),
+            y = (Math.random() - 0.5) * this.SCATTER_RADIUS * 0.3;
+        return {
+            x : x,
+            y : y,
+            z : z,
+            hue : Math.round(t / Math.PI * 20 + 40)
+        };
+    },
+    createDoubleCone : function(){
+        var phi = Math.random() * Math.PI * 2,
+            t = Math.random(),
+            sign = Math.random() > 0.5 ? 1 : -1,
+            y = sign * this.SCATTER_RADIUS * t,
+            r = this.SCATTER_RADIUS * (1 - t) * 0.6;
+        return {
+            x : r * Math.cos(phi),
+            y : y,
+            z : r * Math.sin(phi),
+            hue : Math.round(phi / Math.PI * 30 + 120)
+        };
+    },
+    createCube : function(){
+        var face = Math.floor(Math.random() * 6),
+            u = (Math.random() - 0.5) * 2 * this.SCATTER_RADIUS,
+            v = (Math.random() - 0.5) * 2 * this.SCATTER_RADIUS,
+            w = this.SCATTER_RADIUS;
+        var positions = [
+            {x: w, y: u, z: v},
+            {x: -w, y: u, z: v},
+            {x: u, y: w, z: v},
+            {x: u, y: -w, z: v},
+            {x: u, y: v, z: w},
+            {x: u, y: v, z: -w}
+        ];
+        return {
+            x: positions[face].x,
+            y: positions[face].y,
+            z: positions[face].z,
+            hue : 160 + face * 10
+        };
+    },
+    createEllipsoid : function(){
+        var cosTheta = Math.random() * 2 - 1,
+            sinTheta = Math.sqrt(1 - cosTheta * cosTheta),
+            phi = Math.random() * 2 * Math.PI;
+        return {
+            x : this.SCATTER_RADIUS * 1.3 * sinTheta * Math.cos(phi),
+            y : this.SCATTER_RADIUS * 0.7 * sinTheta * Math.sin(phi),
+            z : this.SCATTER_RADIUS * cosTheta,
+            hue : Math.round(phi / Math.PI * 30 + 260)
+        };
+    }
+};
+
+var PARTICLE = function(center){
+    this.center = center;
+    this.init();
+};
+PARTICLE.prototype = {
+    SPRING : 0.01,
+    FRICTION : 0.9,
+    FOCUS_POSITION : 300,
+    COLOR : 'hsl(%hue, 100%, 70%)',
+
+    init : function(){
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+        this.vx = 0;
+        this.vy = 0;
+        this.vz = 0;
+        this.color;
+    },
+    setAxis : function(axis){
+        this.translating = true;
+        this.nextX = axis.x;
+        this.nextY = axis.y;
+        this.nextZ = axis.z;
+        this.hue = axis.hue;
+    },
+    rotateX : function(angle){
+        var sin = Math.sin(angle),
+            cos = Math.cos(angle),
+            nextY = this.nextY * cos - this.nextZ * sin,
+            nextZ = this.nextZ * cos + this.nextY * sin,
+            y = this.y * cos - this.z * sin,
+            z = this.z * cos + this.y * sin;
+        this.nextY = nextY;
+        this.nextZ = nextZ;
+        this.y = y;
+        this.z = z;
+    },
+    rotateY : function(angle){
+        var sin = Math.sin(angle),
+            cos = Math.cos(angle),
+            nextX = this.nextX * cos - this.nextZ * sin,
+            nextZ = this.nextZ * cos + this.nextX * sin,
+            x = this.x * cos - this.z * sin,
+            z = this.z * cos + this.x * sin;
+        this.nextX = nextX;
+        this.nextZ = nextZ;
+        this.x = x;
+        this.z = z;
+    },
+    rotateZ : function(angle){
+        var sin = Math.sin(angle),
+            cos = Math.cos(angle),
+            nextX = this.nextX * cos - this.nextY * sin,
+            nextY = this.nextY * cos + this.nextX * sin,
+            x = this.x * cos - this.y * sin,
+            y = this.y * cos + this.x * sin;
+        this.nextX = nextX;
+        this.nextY = nextY;
+        this.x = x;
+        this.y = y;
+    },
+    getAxis3D : function(){
+        this.vx += (this.nextX - this.x) * this.SPRING;
+        this.vy += (this.nextY - this.y) * this.SPRING;
+        this.vz += (this.nextZ - this.z) * this.SPRING;
+        this.vx *= this.FRICTION;
+        this.vy *= this.FRICTION;
+        this.vz *= this.FRICTION;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.z += this.vz;
+        return {x : this.x, y : this.y, z : this.z};
+    },
+    getAxis2D : function(theta){
+        var axis = this.getAxis3D(),
+            scale = this.FOCUS_POSITION / (this.FOCUS_POSITION + axis.z);
+        return {
+            x : this.center.x + axis.x * scale,
+            y : this.center.y - axis.y * scale,
+            color : this.COLOR.replace('%hue', this.hue + theta)
+        };
+    }
+};
+
+$(function(){
+    RENDERER.init(STRATEGY);
+});
+</script>
+</body>
+</html>

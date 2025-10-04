@@ -1,30 +1,885 @@
 <!DOCTYPE html>
-<html lang="en" >
-
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>黑洞引力</title>
-  
-  
-  
-      <link rel="stylesheet" href="css/blackhole.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>黑洞引力模拟</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  
+    body {
+      font-family: 'Microsoft YaHei', Helvetica, sans-serif;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, #0a1628 0%, #020510 100%);
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      cursor: crosshair;
+    }
+
+    canvas.dragging {
+      cursor: grabbing;
+    }
+
+    canvas.hovering {
+      cursor: pointer;
+    }
+
+    .title {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-shadow: 0 0 20px rgba(100, 200, 255, 0.8);
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .info-panel {
+      position: absolute;
+      top: 80px;
+      left: 20px;
+      background: rgba(15, 25, 45, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(100, 200, 255, 0.3);
+      border-radius: 12px;
+      padding: 15px 20px;
+      color: #e2eaf7;
+      font-size: 14px;
+      line-height: 1.8;
+      max-width: 320px;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .info-panel h3 {
+      color: #64c8ff;
+      font-size: 18px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(100, 200, 255, 0.5);
+    }
+
+    .info-panel .operation {
+      margin: 8px 0;
+      padding-left: 10px;
+      border-left: 2px solid rgba(100, 200, 255, 0.5);
+    }
+
+    .info-panel .operation strong {
+      color: #64c8ff;
+    }
+
+    .stats {
+      position: absolute;
+      top: 80px;
+      right: 20px;
+      background: rgba(15, 25, 45, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(100, 200, 255, 0.3);
+      border-radius: 12px;
+      padding: 15px 20px;
+      color: #e2eaf7;
+      font-size: 14px;
+      z-index: 100;
+      min-width: 180px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .stats .stat-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(100, 200, 255, 0.2);
+    }
+
+    .stats .stat-item:last-child {
+      border-bottom: none;
+    }
+
+    .stats .stat-label {
+      color: #a0c4e8;
+    }
+
+    .stats .stat-value {
+      color: #64c8ff;
+      font-weight: bold;
+    }
+
+    .controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 15px;
+      z-index: 100;
+    }
+
+    .btn {
+      background: rgba(15, 25, 45, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(100, 200, 255, 0.3);
+      border-radius: 8px;
+      color: #64c8ff;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn:hover {
+      background: rgba(100, 200, 255, 0.2);
+      border-color: #64c8ff;
+      box-shadow: 0 0 20px rgba(100, 200, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .science-info {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 25, 45, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(100, 200, 255, 0.3);
+      border-radius: 12px;
+      padding: 15px 25px;
+      color: #e2eaf7;
+      font-size: 13px;
+      max-width: 600px;
+      text-align: center;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .science-info strong {
+      color: #64c8ff;
+    }
+
+    /* 滑块样式 */
+    input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        background: rgba(100, 200, 255, 0.2);
+        height: 4px;
+        border-radius: 2px;
+        outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #64c8ff;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(100, 200, 255, 0.5);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #64c8ff;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 0 10px rgba(100, 200, 255, 0.5);
+    }
+
+    @media (max-width: 768px) {
+      .title { font-size: 22px; top: 15px; }
+      .info-panel { 
+        top: 60px; 
+        left: 10px; 
+        font-size: 12px; 
+        padding: 12px 15px;
+        max-width: calc(50vw - 20px);
+      }
+      .stats { 
+        top: 60px; 
+        right: 10px; 
+        font-size: 12px; 
+        padding: 12px 15px;
+        min-width: 140px;
+      }
+      .science-info {
+        bottom: 70px;
+        max-width: 90vw;
+        font-size: 11px;
+        padding: 12px 18px;
+      }
+      .controls { 
+        bottom: 15px;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .btn { padding: 8px 15px; font-size: 12px; }
+      input[type="range"] { width: 80px; } /* 缩小滑块 */
+    }
+
+    @media (max-width: 480px) {
+      .info-panel h3 { font-size: 14px; }
+      .info-panel .operation { font-size: 11px; }
+    }
+  </style>
 </head>
-
 <body>
-<audio src="wav/muc-white.mp3" autoplay loop></audio>
+  <div class="title">黑洞引力模拟</div>
+
+  <div class="info-panel">
+    <h3>操作说明</h3>
+    <div class="operation"><strong>单击：</strong>创建新黑洞</div>
+    <div class="operation"><strong>拖动：</strong>移动黑洞位置</div>
+    <div class="operation"><strong>双击：</strong>消除选中黑洞</div>
+    <div class="operation"><strong>移动鼠标：</strong>观察引力效果</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-item">
+      <span class="stat-label">黑洞数量</span>
+      <span class="stat-value" id="blackhole-count">0</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">粒子数量</span>
+      <span class="stat-value" id="particle-count">100</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">引力作用</span>
+      <span class="stat-value" id="interference-status">开启</span>
+    </div>
+  </div>
+
+  <div class="science-info">
+    <strong>科普：</strong>黑洞是宇宙中引力极强的天体，连光都无法逃脱。本模拟展示了黑洞的引力效应、粒子吸积、以及黑洞合并等现象。
+  </div>
+
+  <div class="controls">
+    <button class="btn" onclick="resetScene()">重置场景</button>
+    <button class="btn" onclick="addRandomBlackhole()">随机黑洞</button>
+    <button class="btn" id="toggle-gravity-btn" onclick="toggleInterference()">关闭引力</button>
+    
+    <div class="btn" style="display: flex; align-items: center; gap: 10px; padding: 10px 15px;">
+        <span style="white-space: nowrap;">粒子数量：</span>
+        <input type="range" min="0" max="500" value="100" id="particle-slider" 
+               style="width: 120px; cursor: pointer;">
+        <span id="particle-value" style="min-width: 35px; text-align: right;">100</span>
+    </div>
+  </div>
+
   <canvas id="c"></canvas>
-<div class="info">点击创建Blackhole！</div>
-  <script src='javascript/kzymdn.js'></script>
+  <script src='../js/kzymdn.js'></script>
+  <script>
+/**
+ * requestAnimationFrame
+ */
+window.requestAnimationFrame = (function(){
+    return  window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      ||
+            window.msRequestAnimationFrame     ||
+            function (callback) {
+                window.setTimeout(callback, 1000 / 60);
+            };
+})();
 
-  
+/**
+ * Vector
+ */
+function Vector(x, y) {
+    this.x = x || 0;
+    this.y = y || 0;
+}
 
-    <script  src="javascript/blackhole.js"></script>
+Vector.add = function(a, b) {
+    return new Vector(a.x + b.x, a.y + b.y);
+};
 
+Vector.sub = function(a, b) {
+    return new Vector(a.x - b.x, a.y - b.y);
+};
 
+Vector.scale = function(v, s) {
+    return v.clone().scale(s);
+};
 
+Vector.random = function() {
+    return new Vector(
+        Math.random() * 2 - 1,
+        Math.random() * 2 - 1
+    );
+};
 
+Vector.prototype = {
+    set: function(x, y) {
+        if (typeof x === 'object') {
+            y = x.y;
+            x = x.x;
+        }
+        this.x = x || 0;
+        this.y = y || 0;
+        return this;
+    },
+
+    add: function(v) {
+        this.x += v.x;
+        this.y += v.y;
+        return this;
+    },
+
+    sub: function(v) {
+        this.x -= v.x;
+        this.y -= v.y;
+        return this;
+    },
+
+    scale: function(s) {
+        this.x *= s;
+        this.y *= s;
+        return this;
+    },
+
+    length: function() {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    },
+
+    lengthSq: function() {
+        return this.x * this.x + this.y * this.y;
+    },
+
+    normalize: function() {
+        var m = Math.sqrt(this.x * this.x + this.y * this.y);
+        if (m) {
+            this.x /= m;
+            this.y /= m;
+        }
+        return this;
+    },
+
+    angle: function() {
+        return Math.atan2(this.y, this.x);
+    },
+
+    angleTo: function(v) {
+        var dx = v.x - this.x,
+            dy = v.y - this.y;
+        return Math.atan2(dy, dx);
+    },
+
+    distanceTo: function(v) {
+        var dx = v.x - this.x,
+            dy = v.y - this.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    },
+
+    distanceToSq: function(v) {
+        var dx = v.x - this.x,
+            dy = v.y - this.y;
+        return dx * dx + dy * dy;
+    },
+
+    lerp: function(v, t) {
+        this.x += (v.x - this.x) * t;
+        this.y += (v.y - this.y) * t;
+        return this;
+    },
+
+    clone: function() {
+        return new Vector(this.x, this.y);
+    },
+
+    toString: function() {
+        return '(x:' + this.x + ', y:' + this.y + ')';
+    }
+};
+
+/**
+ * GravityPoint (黑洞)
+ */
+function GravityPoint(x, y, radius, targets) {
+    Vector.call(this, x, y);
+    this.radius = radius;
+    this.currentRadius = radius * 0.5;
+
+    this._targets = {
+        particles: targets.particles || [],
+        gravities: targets.gravities || []
+    };
+    this._speed = new Vector();
+    this._pulse = 0; // 脉动动画
+}
+
+GravityPoint.RADIUS_LIMIT = 65;
+GravityPoint.interferenceToPoint = true;
+
+GravityPoint.prototype = (function(o) {
+    var s = new Vector(0, 0), p;
+    for (p in o) s[p] = o[p];
+    return s;
+})({
+    gravity:       0.05,
+    isMouseOver:   false,
+    dragging:      false,
+    destroyed:     false,
+    _easeRadius:   0,
+    _dragDistance: null,
+    _collapsing:   false,
+
+    hitTest: function(p) {
+        return this.distanceTo(p) < this.radius;
+    },
+
+    startDrag: function(dragStartPoint) {
+        this._dragDistance = Vector.sub(dragStartPoint, this);
+        this.dragging = true;
+    },
+
+    drag: function(dragToPoint) {
+        this.x = dragToPoint.x - this._dragDistance.x;
+        this.y = dragToPoint.y - this._dragDistance.y;
+    },
+
+    endDrag: function() {
+        this._dragDistance = null;
+        this.dragging = false;
+    },
+
+    addSpeed: function(d) {
+        this._speed = this._speed.add(d);
+    },
+
+    collapse: function(e) {
+        this.currentRadius *= 1.75;
+        this._collapsing = true;
+    },
+
+    render: function(ctx) {
+        if (this.destroyed) return;
+
+        var particles = this._targets.particles,
+            i, len;
+
+        for (i = 0, len = particles.length; i < len; i++) {
+            particles[i].addSpeed(Vector.sub(this, particles[i]).normalize().scale(this.gravity));
+        }
+
+        this._easeRadius = (this._easeRadius + (this.radius - this.currentRadius) * 0.07) * 0.95;
+        this.currentRadius += this._easeRadius;
+        if (this.currentRadius < 0) this.currentRadius = 0;
+
+        if (this._collapsing) {
+            this.radius *= 0.75;
+            if (this.currentRadius < 1) this.destroyed = true;
+            this._draw(ctx);
+            return;
+        }
+
+        var gravities = this._targets.gravities,
+            g, absorp,
+            area = this.radius * this.radius * Math.PI, garea;
+
+        for (i = 0, len = gravities.length; i < len; i++) {
+            g = gravities[i];
+
+            if (g === this || g.destroyed) continue;
+
+            if (
+                (this.currentRadius >= g.radius || this.dragging) &&
+                this.distanceTo(g) < (this.currentRadius + g.radius) * 0.85
+            ) {
+                g.destroyed = true;
+                this.gravity += g.gravity;
+
+                absorp = Vector.sub(g, this).scale(g.radius / this.radius * 0.5);
+                this.addSpeed(absorp);
+
+                garea = g.radius * g.radius * Math.PI;
+                this.currentRadius = Math.sqrt((area + garea * 3) / Math.PI);
+                this.radius = Math.sqrt((area + garea) / Math.PI);
+            }
+
+            g.addSpeed(Vector.sub(this, g).normalize().scale(this.gravity));
+        }
+
+        if (GravityPoint.interferenceToPoint && !this.dragging)
+            this.add(this._speed);
+
+        this._speed = new Vector();
+
+        if (this.currentRadius > GravityPoint.RADIUS_LIMIT) this.collapse();
+
+        this._draw(ctx);
+    },
+
+    _draw: function(ctx) {
+        var grd, r;
+        this._pulse += 0.05;
+
+        ctx.save();
+
+        // 外层光晕 - 增强效果
+        grd = ctx.createRadialGradient(this.x, this.y, this.radius, this.x, this.y, this.radius * 5);
+        grd.addColorStop(0, 'rgba(100, 200, 255, 0.15)');
+        grd.addColorStop(0.5, 'rgba(50, 150, 255, 0.05)');
+        grd.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius * 5, 0, Math.PI * 2, false);
+        ctx.fillStyle = grd;
+        ctx.fill();
+
+        // 鼠标悬停高亮
+        if (this.isMouseOver && !this.dragging) {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.currentRadius + 5, 0, Math.PI * 2, false);
+            ctx.strokeStyle = 'rgba(100, 200, 255, 0.6)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        // 黑洞主体 - 脉动效果
+        var pulseSize = Math.sin(this._pulse) * 0.1 + 1;
+        r = Math.random() * this.currentRadius * 0.7 + this.currentRadius * 0.3;
+        grd = ctx.createRadialGradient(this.x, this.y, r * 0.3, this.x, this.y, this.currentRadius * pulseSize);
+        grd.addColorStop(0, 'rgba(0, 0, 0, 1)');
+        grd.addColorStop(0.4, 'rgba(20, 20, 40, 0.95)');
+        grd.addColorStop(0.7, Math.random() < 0.2 ? 'rgba(255, 196, 0, 0.25)' : 'rgba(103, 181, 191, 0.8)');
+        grd.addColorStop(1, 'rgba(50, 120, 200, 0.3)');
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.currentRadius * pulseSize, 0, Math.PI * 2, false);
+        ctx.fillStyle = grd;
+        ctx.fill();
+
+        ctx.restore();
+    }
+});
+
+/**
+ * Particle (粒子)
+ */
+function Particle(x, y, radius) {
+    Vector.call(this, x, y);
+    this.radius = radius;
+    this._latest = new Vector();
+    this._speed  = new Vector();
+}
+
+Particle.prototype = (function(o) {
+    var s = new Vector(0, 0), p;
+    for (p in o) s[p] = o[p];
+    return s;
+})({
+    addSpeed: function(d) {
+        this._speed.add(d);
+    },
+
+    update: function() {
+        if (this._speed.length() > 12) this._speed.normalize().scale(12);
+        this._latest.set(this);
+        this.add(this._speed);
+    }
+});
+
+// Initialize
+(function() {
+    var BACKGROUND_COLOR      = 'rgba(2, 5, 16, 1)',
+        PARTICLE_RADIUS       = 1,
+        G_POINT_RADIUS        = 10,
+        G_POINT_RADIUS_LIMITS = 65;
+
+    var canvas, context,
+        bufferCvs, bufferCtx,
+        screenWidth, screenHeight,
+        mouse = new Vector(),
+        gravities = [],
+        particles = [],
+        grad,
+        gui, control;
+
+    function resize(e) {
+        screenWidth  = canvas.width  = window.innerWidth;
+        screenHeight = canvas.height = window.innerHeight;
+        bufferCvs.width  = screenWidth;
+        bufferCvs.height = screenHeight;
+        context   = canvas.getContext('2d');
+        bufferCtx = bufferCvs.getContext('2d');
+
+        var cx = canvas.width * 0.5,
+            cy = canvas.height * 0.5;
+
+        grad = context.createRadialGradient(cx, cy, 0, cx, cy, Math.sqrt(cx * cx + cy * cy));
+        grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+        grad.addColorStop(1, 'rgba(0, 0, 0, 0.35)');
+    }
+
+    function mouseMove(e) {
+        mouse.set(e.clientX, e.clientY);
+
+        var i, g, hit = false;
+        for (i = gravities.length - 1; i >= 0; i--) {
+            g = gravities[i];
+            if ((!hit && g.hitTest(mouse)) || g.dragging)
+                g.isMouseOver = hit = true;
+            else
+                g.isMouseOver = false;
+        }
+
+        if (hit) {
+            canvas.classList.add('hovering');
+        } else {
+            canvas.classList.remove('hovering');
+        }
+
+        var isDragging = false;
+        for (i = 0; i < gravities.length; i++) {
+            if (gravities[i].dragging) {
+                isDragging = true;
+                break;
+            }
+        }
+        if (isDragging) {
+            canvas.classList.add('dragging');
+        } else {
+            canvas.classList.remove('dragging');
+        }
+    }
+
+    function mouseDown(e) {
+        for (var i = gravities.length - 1; i >= 0; i--) {
+            if (gravities[i].isMouseOver) {
+                gravities[i].startDrag(mouse);
+                return;
+            }
+        }
+        gravities.push(new GravityPoint(e.clientX, e.clientY, G_POINT_RADIUS, {
+            particles: particles,
+            gravities: gravities
+        }));
+        updateStats();
+    }
+
+    function mouseUp(e) {
+        for (var i = 0, len = gravities.length; i < len; i++) {
+            if (gravities[i].dragging) {
+                gravities[i].endDrag();
+                break;
+            }
+        }
+    }
+
+    function doubleClick(e) {
+        for (var i = gravities.length - 1; i >= 0; i--) {
+            if (gravities[i].isMouseOver) {
+                gravities[i].collapse();
+                break;
+            }
+        }
+    }
+
+    function addParticle(num) {
+        var i, p;
+        for (i = 0; i < num; i++) {
+            p = new Particle(
+                Math.floor(Math.random() * screenWidth - PARTICLE_RADIUS * 2) + 1 + PARTICLE_RADIUS,
+                Math.floor(Math.random() * screenHeight - PARTICLE_RADIUS * 2) + 1 + PARTICLE_RADIUS,
+                PARTICLE_RADIUS
+            );
+            p.addSpeed(Vector.random());
+            particles.push(p);
+        }
+        updateStats();
+    }
+
+    function removeParticle(num) {
+        if (particles.length < num) num = particles.length;
+        for (var i = 0; i < num; i++) {
+            particles.pop();
+        }
+        updateStats();
+    }
+
+    function updateStats() {
+        document.getElementById('blackhole-count').textContent = gravities.length;
+        document.getElementById('particle-count').textContent = particles.length;
+    }
+
+    // 全局函数
+    window.resetScene = function() {
+        gravities = [];
+        particles = [];
+        addParticle(control.particleNum);
+        updateStats();
+    };
+
+    window.addRandomBlackhole = function() {
+        var x = Math.random() * screenWidth;
+        var y = Math.random() * screenHeight;
+        gravities.push(new GravityPoint(x, y, G_POINT_RADIUS, {
+            particles: particles,
+            gravities: gravities
+        }));
+        updateStats();
+    };
+
+    window.toggleInterference = function() {
+    GravityPoint.interferenceToPoint = !GravityPoint.interferenceToPoint;
+    var status = GravityPoint.interferenceToPoint ? '开启' : '关闭';
+    document.getElementById('interference-status').textContent = status;
+    // 修改按钮文字
+    event.target.textContent = GravityPoint.interferenceToPoint ? '关闭引力' : '开启引力';
+    };
+
+    control = {
+        particleNum: 100
+    };
+
+    canvas  = document.getElementById('c');
+    bufferCvs = document.createElement('canvas');
+
+    window.addEventListener('resize', resize, false);
+    resize(null);
+
+    addParticle(control.particleNum);
+
+    canvas.addEventListener('mousemove', mouseMove, false);
+    canvas.addEventListener('mousedown', mouseDown, false);
+    canvas.addEventListener('mouseup', mouseUp, false);
+    canvas.addEventListener('dblclick', doubleClick, false);
+
+    // 触摸支持
+    canvas.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        var touch = e.touches[0];
+        mouseDown({clientX: touch.clientX, clientY: touch.clientY});
+    }, false);
+
+    canvas.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+        var touch = e.touches[0];
+        mouseMove({clientX: touch.clientX, clientY: touch.clientY});
+    }, false);
+
+    canvas.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        mouseUp({});
+    }, false);
+
+    // GUI
+    // gui = new dat.GUI();
+    // gui.add(control, 'particleNum', 0, 500).step(1).name('粒子数量').onChange(function() {
+    //     var n = (control.particleNum | 0) - particles.length;
+    //     if (n > 0)
+    //         addParticle(n);
+    //     else if (n < 0)
+    //         removeParticle(-n);
+    // });
+    // gui.add(GravityPoint, 'interferenceToPoint').name('黑洞间引力').onChange(function() {
+    //     document.getElementById('interference-status').textContent = 
+    //         GravityPoint.interferenceToPoint ? '开启' : '关闭';
+    // });
+    // gui.close();
+
+    updateStats();
+    updateStats();
+
+    // 粒子数量滑块控制
+    var particleSlider = document.getElementById('particle-slider');
+    var particleValue = document.getElementById('particle-value');
+
+    if (particleSlider) {
+        particleSlider.addEventListener('input', function(e) {
+            var targetNum = parseInt(e.target.value);
+            var n = targetNum - particles.length;
+            
+            if (n > 0) {
+                addParticle(n);
+            } else if (n < 0) {
+                removeParticle(-n);
+            }
+            
+            control.particleNum = targetNum;
+            particleValue.textContent = targetNum;
+        });
+    }
+
+    // 主循环
+    var loop = function() {
+        var i, len, g, p;
+
+        context.save();
+        context.fillStyle = BACKGROUND_COLOR;
+        context.fillRect(0, 0, screenWidth, screenHeight);
+        context.fillStyle = grad;
+        context.fillRect(0, 0, screenWidth, screenHeight);
+        context.restore();
+
+        for (i = 0, len = gravities.length; i < len; i++) {
+            g = gravities[i];
+            if (g.dragging) g.drag(mouse);
+            g.render(context);
+            if (g.destroyed) {
+                gravities.splice(i, 1);
+                len--;
+                i--;
+                updateStats();
+            }
+        }
+      
+        bufferCtx.save();
+        bufferCtx.globalCompositeOperation = 'destination-out';
+        bufferCtx.globalAlpha = 0.35;
+        bufferCtx.fillRect(0, 0, screenWidth, screenHeight);
+        bufferCtx.restore();
+
+        len = particles.length;
+        bufferCtx.save();
+        bufferCtx.fillStyle = bufferCtx.strokeStyle = '#fff';
+        bufferCtx.lineCap = bufferCtx.lineJoin = 'round';
+        bufferCtx.lineWidth = PARTICLE_RADIUS * 2;
+        bufferCtx.beginPath();
+        for (i = 0; i < len; i++) {
+            p = particles[i];
+            p.update();
+            bufferCtx.moveTo(p.x, p.y);
+            bufferCtx.lineTo(p._latest.x, p._latest.y);
+        }
+        bufferCtx.stroke();
+        bufferCtx.beginPath();
+        for (i = 0; i < len; i++) {
+            p = particles[i];
+            bufferCtx.moveTo(p.x, p.y);
+            bufferCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2, false);
+        }
+        bufferCtx.fill();
+        bufferCtx.restore();
+
+        context.drawImage(bufferCvs, 0, 0);
+
+        requestAnimationFrame(loop);
+    };
+    loop();
+
+})();
+  </script>
 </body>
-
 </html>
