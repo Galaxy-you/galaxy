@@ -30,9 +30,5 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
-// Vercel 不需要 app.listen!
-// app.listen(3000, () => {
-//     console.log('服务器运行在 http://localhost:3000');
-// });
-
-module.exports = app; // 关键：导出 app，给 Vercel 识别
+// 不要 app.listen
+module.exports = app;
