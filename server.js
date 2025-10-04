@@ -1,12 +1,14 @@
 const express = require('express');
 const cors = require('cors');
-// 使用axios替代fetch
 const axios = require('axios');
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static('.')); 
+
+// 密钥从环境变量中获取
+const API_KEY = process.env.DASHSCOPE_API_KEY; 
 
 app.post('/api/chat', async (req, res) => {
     try {
@@ -15,11 +17,12 @@ app.post('/api/chat', async (req, res) => {
             url: 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'sk-d53769f8492e476bb697b1dd2b187d6d' 
+                // 使用环境变量
+                'Authorization': API_KEY 
             },
             data: req.body
         });
-        
+
         res.json(response.data);
     } catch (error) {
         res.status(500).json({ 
