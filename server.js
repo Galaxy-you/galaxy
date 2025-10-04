@@ -7,7 +7,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// 密钥从环境变量中获取
 const API_KEY = process.env.DASHSCOPE_API_KEY; 
 
 app.post('/api/chat', async (req, res) => {
@@ -17,7 +16,6 @@ app.post('/api/chat', async (req, res) => {
             url: 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation',
             headers: {
                 'Content-Type': 'application/json',
-                // 使用环境变量
                 'Authorization': API_KEY 
             },
             data: req.body
@@ -32,6 +30,9 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log('服务器运行在 http://localhost:3000');
-});
+// Vercel 不需要 app.listen!
+// app.listen(3000, () => {
+//     console.log('服务器运行在 http://localhost:3000');
+// });
+
+module.exports = app; // 关键：导出 app，给 Vercel 识别

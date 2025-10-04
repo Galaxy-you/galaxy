@@ -1,6 +1,6 @@
 // 配置信息
 const AI_CONFIG = {
-    apiUrl: 'http://localhost:3000/api/chat',
+    apiUrl: '/api/chat',
     model: 'qwen-turbo'
 };
 
