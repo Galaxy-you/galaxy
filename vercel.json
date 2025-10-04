@@ -7,7 +7,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/public/index.html" // *** 关键修改：指向 public 目录 ***
+      "destination": "/public/index.html" 
     }
   ],
   "builds": [
