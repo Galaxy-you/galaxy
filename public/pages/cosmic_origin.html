@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宇宙起源</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        .navbar {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 30px;
+            box-shadow: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(100,181,246,0.3);
+        }
+        .logo {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        .logo-img {
+            height: 40px;
+            width: auto;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .logo-text {
+            font-size: 22px;
+            font-weight: bold;
+            color: #64b5f6;
+            vertical-align: middle;
+        }
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #e0e6ed;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s, text-shadow 0.3s;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+        .back-btn:hover {
+            color: #90caf9;
+            text-shadow: 0 0 5px #64b5f6;
+        }
+        .nav-list {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-list li a {
+            color: #eaf6fb;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color .2s;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+        .nav-list li a:hover {
+            color: #3b86ff;
+            background: #1a236a33;
+        }
+
+        .shell {
+            width: 100%;
+            position: relative;
+            padding: 80px 0;
+            transition: 0.3s ease 0s;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        .shell::before {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(99, 99, 99, 0.8);
+            content: "";
+        }
+
+        .header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+
+        .tittle {
+            color: #fff;
+            font-size: 46px;
+            font-weight: normal;
+            margin: 0;
+        }
+
+        .timeline {
+            display: flex;
+            margin: 0 auto;
+            flex-direction: column;
+            flex-wrap: wrap;
+            max-width: 700px;
+            position: relative;
+        }
+
+        .content-tittle {
+            font-weight: normal;
+            font-size: 50px;
+            margin: -10px 0 0 0;
+            transition: 0.4s;
+            padding: 0 10px;
+            box-sizing: border-box;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .content-desc {
+            margin: 0;
+            font-size: 15px;
+            box-sizing: border-box;
+            color: rgba(225, 225, 225, 0.7);
+            line-height: 25px;
+            text-indent: 30px;
+        }
+
+        .timeline::before {
+            position: absolute;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            margin-left: -1px;
+            content: "";
+            background: rgba(225, 225, 225, 0.07);
+        }
+
+        .item {
+            padding: 40px 0;
+            opacity: 0.3;
+            filter: blur(2px);
+            transition: 0.5s;
+            box-sizing: border-box;
+            width: calc(50% - 40px);
+            display: flex;
+            position: relative;
+            transform: translateY(-80px);
+        }
+
+        .item::before {
+            content: attr(data-text);
+            letter-spacing: 3px;
+            width: 100%;
+            position: absolute;
+            color: rgba(225, 225, 225, 0.5);
+            font-size: 13px;
+            border-left: 2px solid rgba(225, 225, 225, 0.5);
+            top: 70%;
+            margin-top: -5px;
+            padding-left: 15px;
+            opacity: 0;
+            right: calc(-100% - 56px);
+            font: 900 20px;
+            letter-spacing: 5px;
+        }
+
+        .item:nth-child(even) {
+            align-self: flex-end;
+        }
+
+        .item:nth-child(even)::before {
+            right: auto;
+            text-align: right;
+            left: calc(-100% - 56px);
+            padding-left: 0;
+            border-left: none;
+            border-right: 2px solid rgba(225, 225, 225, 0.5);
+            padding-right: 15px;
+        }
+
+        .item--active {
+            opacity: 1;
+            transform: rotateY(0);
+            filter: blur(0px);
+        }
+
+        .item--active:before {
+            top: 50%;
+            transition: 0.3s all 0.2s;
+            opacity: 1;
+        }
+
+        .item--active.content-tittle {
+            margin: -50px 0 20px 0;
+        }
+
+        .img {
+            max-width: 150%;
+            width: 150%;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        /* 左侧卡片的图片向左偏移 */
+        .item:nth-child(odd) .img {
+            transform: translateX(-25%);
+        }
+        
+        
+        .footer {
+            padding: 95px 0;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #999;
+            display: inline-block;
+        }
+
+        @media only screen and (max-width: 767px) {
+            .item {
+                align-self: baseline in !important;
+                width: 100%;
+                padding: 0 30px 150px 80px;
+            }
+
+            .item::before {
+                left: 10px !important;
+                padding: 0 !important;
+                top: 50px;
+                text-align: center !important;
+                width: 60px;
+                border: none !important;
+
+            }
+
+            .item:last-child {
+                padding-bottom: 40px;
+            }
+        }
+
+        @media only screen and (max-width: 767px) {
+            .timeline::before {
+                left: 40px;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0;
+            width: 100vw; height: 100vh;
+            background: radial-gradient(ellipse at center, #233a66cc 0%, #0d1b3acc 100%);
+            justify-content: center;
+            align-items: center;
+            animation: modalFadeIn .5s;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0;}
+            to { opacity: 1;}
+        }
+        .modal-content {
+            width: min(72vw, 920px);  /* 比例优先，同时设个上限 */
+            height: min(78vh, 720px);
+            background: linear-gradient(135deg, #152e5e 70%, #3b86ff 100%);
+            border-radius: 28px;
+            overflow: hidden;
+            padding: 40px 48px;
+            position: relative;
+            box-shadow: 0 0 88px #3b86ffcc, 0 4px 32px #172f5e88, 0 0 24px #2ef0ff55 inset;
+            color: #eaf6fb;
+            display: flex;
+            flex-direction: column;
+            animation: modalScaleUp .4s cubic-bezier(.68,-0.55,.27,1.55);
+            border: 2px solid #3b86ffbb;
+            backdrop-filter: blur(8px);
+        }
+        @keyframes modalScaleUp {
+            from { transform: scale(0.7); opacity: 0; filter: blur(8px);}
+            50% { filter: blur(2px);}
+            to { transform: scale(1); opacity: 1; filter: blur(0);}
+        }
+        .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 38px;
+            font-size: 2rem;
+            color: #3b86ff;
+            cursor: pointer;
+            z-index: 2100;
+            transition: color .2s, box-shadow .2s;
+            background: none;
+            border: none;
+            text-shadow: 0 0 8px #3b86ff88;
+        }
+        .close-btn:hover {
+            color: #fff;
+            background: #3b86ff44;
+            box-shadow: 0 0 16px #3b86ffbb;
+        }
+        .modal-title {
+            font-size: 2.15rem;
+            color: #3b86ff;
+            margin-bottom: 18px;
+            text-shadow: 0 2px 12px #3b86ff88;
+            background: linear-gradient(90deg,#2ef0ff 20%,#3b86ff 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleFadeIn .5s;
+        }
+        @keyframes titleFadeIn {
+            from { opacity: 0; letter-spacing: 16px;}
+            to { opacity: 1; letter-spacing: 2px;}
+        }
+        .modal-body {
+          flex: 1 1 auto;              /* 占满剩余高度，允许收缩 */
+          overflow-y: auto;            /* 把滚动交给正文容器 */
+          min-height: 0;               /* 关键：flex 子项在容器内才能滚动 */
+          -webkit-overflow-scrolling: touch; /* 移动端顺滑滚动 */
+
+          /* 原有的视觉样式保留 */
+          font-size: 1.18rem;
+          color: #eaf6fb;
+          animation: bodyFadeIn .7s;
+        }
+        .modal-body a {
+          color: #fffa80 !important;
+          text-decoration: underline;
+          font-weight: bold;
+          text-shadow: 0 2px 12px #000a, 0 0 4px #2ef0ff66;
+          transition: color .2s;
+        }
+        .modal-body a:hover {
+            color: #ffffff !important;
+            background: #3b86ff44;
+            box-shadow: 0 0 8px #3b86ffbb;
+        }
+        /* 新增小标题样式 */
+        .modal-section-title {
+            font-size: 2.3rem;
+            font-weight: 900;
+            margin-top: 32px;
+            margin-bottom: 18px;
+            letter-spacing: 3px;
+            text-shadow: 0 2px 12px #0008, 0 0 8px #3b86ff77;
+            border-radius: 12px;
+            padding: 2px 16px;
+            display: inline-block;
+        }
+        .modal-intro-title {
+    color: #fff !important;
+    background: none !important;
+    -webkit-background-clip: initial;
+    -webkit-text-fill-color: initial;
+}
+.modal-info-title {
+    color: #fff !important;
+    background: none !important;
+    -webkit-background-clip: initial;
+    -webkit-text-fill-color: initial;
+}
+        @keyframes bodyFadeIn {
+            from { opacity: 0; filter: blur(8px);}
+            to { opacity: 1; filter: blur(0);}
+        }
+        @media (max-width:900px) {
+            .modal-content { padding: 10px; }
+            .tittle { font-size: 1.3rem; }
+            .modal-section-title { font-size: 1.45rem; }
+        }
+    </style>
+</head>
+
+<body>
+   <nav class="navbar">
+        <a href="index.html" class="logo">
+            <img src="../images/logo.png" alt="星河探索 Logo" class="logo-img"/>
+            <span class="logo-text">宇宙起源</span>
+        </a>
+        <a href="../index.html" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            返回主页
+        </a>
+    </nav>
+
+    <div class="shell" id="shell">
+        <div class="timeline">
+            <!-- 五个卡片，各自的 data-detail 要分栏 -->
+
+
+
+<div class="item" data-text="大爆炸奇点"
+data-detail="<br>
+&nbsp;&nbsp;“大爆炸奇点”指的是在广义相对论的框架下，将宇宙的演化向过去外推时，尺度因子趋近于零、时空曲率与物质密度数学上发散的边界。它并不是空间中的一个具体“点”，而是现有经典理论（广义相对论）适用性的极限，提示我们需要量子引力来描述更早期的宇宙。<br><br>
+&nbsp;&nbsp;霍金—彭罗斯奇点定理表明，只要满足一定的物理条件（如能量条件和因果结构等），塌缩或膨胀的时空将不可避免地出现测地线不完备，这在数学上体现为“奇点”的出现。将这一结论用于宇宙学背景，意味着标准的大爆炸宇宙在过去方向上存在理论的“边界”。<br><br>
+&nbsp;&nbsp;然而，在普朗克时期（约 10<sup>-43</sup> 秒及更早），量子效应显著，经典时空概念可能失效。多种量子引力与早期宇宙模型（如圈量子宇宙学中的“宇宙反弹”、弦论启发的前大爆炸/回声宇宙图景、量子宇宙学情形等）尝试避免或替代奇点。值得注意的是，暴胀模型虽然能解释宇宙的大尺度均匀性与结构种子来源，但依据 Borde–Guth–Vilenkin 定理，许多暴胀时空在过去方向仍不完备，奇点（或边界）问题并未被完全消除。<br><br>
+&nbsp;&nbsp;
+“大爆炸奇点”更像是我们理论认知的边界标记：它提醒我们在更高能尺度上需要新的量子引力理论。当前的观测（如 CMB 与大尺度结构）主要约束大爆炸后和暴胀后的物理，而关于奇点本身及其之前的物理仍是开放的前沿课题。<br><br>
+相关信息：<br>
+<a href='https://zh.wikipedia.org/wiki/%E5%A4%A7%E7%88%86%E7%82%B8' target='_blank' rel='noopener noreferrer'>大爆炸 - 维基百科</a><br>
+<a href='https://zh.wikipedia.org/wiki/%E5%BC%95%E5%8A%9B%E5%A5%87%E7%82%B9' target='_blank' rel='noopener noreferrer'>引力奇点 - 维基百科</a><br>
+<a href='https://map.gsfc.nasa.gov/universe/bb_theory.html' target='_blank' rel='noopener noreferrer'>Big Bang 综述（NASA WMAP Universe 101）</a><br>
+<a href='https://esahubble.org/faq/what-is-the-big-bang/' target='_blank' rel='noopener noreferrer'>What is the Big Bang?（ESA/Hubble）</a><br>
+">
+    <div class="content">
+        <img src="../images/宇宙微波背景辐射图片.png" alt="" class="img">
+        <h2 class="content-tittle">大爆炸奇点</h2>
+        <p class="content-desc">138亿年前，宇宙由一个极小极热的点开始膨胀，诞生了空间与时间。</p>
+    </div>
+</div>
+
+
+
+<div class="item" data-text="宇宙膨胀"
+data-detail="<br>
+&nbsp;&nbsp;宇宙膨胀是现代宇宙学的核心内容之一。自大爆炸发生后，空间本身就以惊人的速度开始膨胀，这一过程塑造了我们今天所看到的浩瀚宇宙。膨胀不仅仅是星系远离彼此，更是整个空间尺度的拉伸。1929年，美国天文学家埃德温·哈勃（Edwin Hubble）通过观测遥远星系的光谱，发现这些星系的光普遍发生了“红移”——即光波被拉长，向光谱的红色部分偏移。哈勃由此提出著名的哈勃定律：星系距离我们越远，远离我们的速度越快。这一发现直接证明了宇宙膨胀的存在，成为了大爆炸理论的一个基石。<br><br>
+&nbsp;&nbsp;  宇宙膨胀意味着空间本身在不断变大，而不仅仅是天体在空间中运动。随着空间膨胀，星系之间的距离增加，宇宙的整体密度和温度逐渐降低。早期宇宙极为炽热和密集，物质以等离子体的形式存在，光子无法自由传播。随着膨胀和冷却，物质开始形成原子，宇宙变得透明，光子可以自由穿行，这也就是宇宙微波背景辐射出现的原因。<br><br>
+&nbsp;&nbsp;宇宙学家通过精确测量哈勃常数（Hubble Constant）不断修正宇宙膨胀速率。不同的方法——如使用超新星、宇宙微波背景辐射、引力波等——测得的哈勃常数略有差异，这被称为“哈勃张力”，是当前宇宙学的前沿研究问题之一。宇宙膨胀的速率也并非恒定不变：在宇宙早期，物质和辐射主导膨胀速度，而在数十亿年前，暗能量开始主导膨胀过程，使得宇宙膨胀加速。<br><br>
+&nbsp;&nbsp; 宇宙膨胀不仅解释了星系分布和宇宙大尺度结构的形成，还为暗能量、暗物质等物理学难题提供了观测基础。膨胀理论的提出也带动了宇宙暴胀（Inflation）模型的发展，这一模型解释了宇宙为何在大尺度上如此均匀，并解决了地平线问题和磁单极问题。暴胀假说认为，宇宙在极早期曾经历过一次极短暂但极为剧烈的指数膨胀，使得原本极微小的量子涨落被拉伸到宇观尺度，成为后来星系、结构的“种子”。<br><br>
+&nbsp;&nbsp;  宇宙膨胀不仅是大爆炸理论的直接证据，也是理解宇宙起源、演化和未来命运的关键。科学家们通过观测和理论研究不断揭示膨胀过程中的物理机制，推动人类对宇宙本质的认知不断进步。<br><br>
+相关信息：<br>
+<a href='https://zh.wikipedia.org/wiki/%E5%AE%87%E5%AE%99%E8%86%A8%E8%83%80' target='_blank' rel='noopener noreferrer'>宇宙膨胀 - 维基百科</a><br> 
+<a href='https://zh.wikipedia.org/wiki/%E7%B4%85%E7%A7%BB' target='_blank' rel='noopener noreferrer'>红移 - 维基百科（了解哈勃红移和多普勒频移）</a><br> 
+<a href='https://www.baidu.com/s?wd=%E5%AE%87%E5%AE%99%E8%86%A8%E8%83%80' target='_blank' rel='noopener noreferrer'>百度百科：宇宙膨胀</a>
+
+">
+    <div class="content">
+        <img src="../images/哈勃红移示意图.png" alt="" class="img">
+        <h2 class="content-tittle">宇宙膨胀</h2>
+        <p class="content-desc">大爆炸后，宇宙开始迅速膨胀。随着温度降低，物质和能量逐渐形成基本粒子和原子。宇宙膨胀现象由哈勃观测到星系的红移证实。</p>
+    </div>
+</div>
+    
+
+
+
+<div class="item" data-text="微波背景辐射"
+data-detail="<br>
+&nbsp;&nbsp;宇宙微波背景辐射（Cosmic Microwave Background，简称CMB）是宇宙大爆炸理论中最重要的观测证据之一。CMB是宇宙在大爆炸发生后约38万年时释放出的“余辉”，至今仍遍布于整个宇宙空间。它以微波的形式存在，温度极低，约为2.725 K。CMB的发现和研究不仅证实了大爆炸模型，也为我们揭示了宇宙早期的状态和结构演化过程。<br><br>
+&nbsp;&nbsp;在宇宙诞生的最初阶段，温度极高，物质以等离子体的状态存在，光子与自由电子和质子频繁碰撞，整个宇宙呈现为不透明的高能环境。随着宇宙的膨胀和冷却，温度逐渐下降至约3000K时，电子和质子结合形成中性氢原子，光子不再被频繁散射，这一事件被称为“复合纪元”或“再结合时期”。自此，光子能够自由传播，形成了我们今天可以观测到的宇宙微波背景辐射。<br><br>
+&nbsp;&nbsp;CMB的分布极其均匀，但存在极其微小的温度涨落（百万分之一数量级），这些微小的涨落在后来的宇宙演化中起到了至关重要的作用。科学家利用精密的仪器，测量和分析这些温度微扰，发现它们反映了宇宙早期物质的分布和密度起伏。这些起伏为后来的星系、星团甚至宇宙大尺度结构的形成提供了“种子”。<br><br>
+&nbsp;&nbsp;1965年，美国科学家阿诺·彭齐亚斯（Arno Penzias）和罗伯特·威尔逊（Robert Wilson）在进行射电天文实验时意外发现了CMB信号，这一发现为大爆炸理论提供了强有力的证据，并因此获得了1978年诺贝尔物理学奖。自此以后，关于CMB的研究成为天文学和宇宙学领域的重要方向。<br><br>
+&nbsp;&nbsp;随着技术进步，科学家们通过地面和空间望远镜对CMB展开了更为详细的观测。特别是NASA的微波背景探测器（COBE）、威尔金森微波各向异性探测器（WMAP）、以及欧洲空间局的普朗克（Planck）卫星等，极大地提升了我们对CMB的测量精度。这些卫星获得的CMB数据绘制出了宇宙的“婴儿照片”，揭示了宇宙在极早时期的结构和物理状态。<br><br>
+&nbsp;&nbsp;CMB的研究不仅帮助我们精确测量宇宙的年龄和膨胀速度，还提供了关于宇宙整体形状、物质成分（如暗物质和暗能量）以及宇宙大尺度结构的信息。通过对CMB的分析，科学家能够推断出宇宙的几何性质、空间平坦性、物质比例等一系列关键宇宙学参数。<br><br>
+&nbsp;&nbsp;宇宙微波背景辐射是现代宇宙学的基石之一，为人类探索宇宙起源、演化和结构提供了不可替代的观测数据。CMB不仅是宇宙大爆炸的直接“遗迹”，更是一扇通向宇宙深处的科学之门。<br><br>
+相关信息：<br>
+<a href='https://zh.wikipedia.org/wiki/%E5%AE%87%E5%AE%99%E5%BE%AE%E6%B3%A2%E8%83%8C%E6%99%AF%E8%BE%90%E5%B0%84' target='_blank' rel='noopener noreferrer'>宇宙微波背景辐射 - 维基百科</a><br>
+<a href='https://www.esa.int/Science_Exploration/Space_Science/Planck' target='_blank' rel='noopener noreferrer'>Planck 普朗克空间望远镜（ESA 官方）</a><br>
+<a href='https://map.gsfc.nasa.gov/' target='_blank' rel='noopener noreferrer'>WMAP 微波各向异性探测器（NASA 官方）</a><br>
+<a href='https://lambda.gsfc.nasa.gov/product/cobe/' target='_blank' rel='noopener noreferrer'>COBE 宇宙背景探测者（NASA LAMBDA）</a><br>
+">
+    <div class="content">
+        <img src="../images/普朗克卫星宇宙微波背景辐射图.png" alt="" class="img">
+        <h2 class="content-tittle">微波背景辐射</h2>
+        <p class="content-desc">大爆炸后，宇宙留下了微波背景辐射，这是宇宙早期的“余辉”。</p>
+    </div>
+</div>
+
+
+
+<div class="item" data-text="元素起源"
+data-detail="<br>
+&nbsp;&nbsp;元素起源（Nucleosynthesis）是现代宇宙学和天体物理学研究的核心课题之一，它解释了宇宙中所有化学元素的形成过程。宇宙中的元素并非一次性形成，而是经历了两个主要的阶段：大爆炸核合成和恒星核合成。<br><br>
+&nbsp;&nbsp;宇宙诞生之初，在大爆炸后的最初几分钟内，宇宙处于极高温、高密度的状态。在这一短暂的时期内发生了大爆炸核合成（BBN），形成了宇宙中最轻的元素。主要产物是氢（${^1H}$）和氦（${^4He}$），以及微量的氘（${^2H}$）、氦-3（${^3He}$）和锂（${^7Li}$）。这些轻元素构成了宇宙早期物质的绝大部分。<br><br>
+&nbsp;&nbsp;然而，宇宙中更重的元素（从碳到铀）则是在后来的阶段——恒星核合成中形成的。恒星是巨大的核聚变反应炉，它们在生命周期中通过不同的“燃烧”阶段将轻元素转化为重元素：<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1. 氢燃烧：在主序星（如太阳）内部，氢通过质子-质子链反应或碳氮氧循环（CNO循环）聚变为氦。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2. 氦燃烧：当核心的氢耗尽，恒星收缩升温，氦通过3氦过程聚变成碳（${^12C}$），然后进一步形成氧（${^16O}$）等。<br><br>
+&nbsp;&nbsp;对于大质量恒星，这个过程会持续进行，通过碳燃烧、氖燃烧、氧燃烧，直到硅燃烧，最终生成在原子核中具有最高结合能的元素——铁和镍。铁是恒星通过聚变反应能生成的最终产物，因为它再进行聚变就不会释放能量，反而需要吸收能量。<br><br>
+&nbsp;&nbsp;原子序数比铁更重的元素（如金、银、铀等）主要是在更具灾难性的事件中形成的，包括超新星爆发（Supernova）和中子星并合。这些过程中会发生快中子俘获过程（r-过程），在极高能量和中子密度下，原子核能迅速吸收中子，从而创造出最重的元素并将它们抛洒到星际空间中，为下一代恒星和行星的形成提供了丰富的“原材料”。<br><br>
+&nbsp;&nbsp;宇宙中的元素起源是一个跨越百亿年的宏伟过程，始于大爆炸，通过恒星的生与死不断循环，最终形成了构成地球和生命的丰富元素，正如卡尔·萨根所言：“我们都是星尘。”<br><br>
+相关信息：<br>
+<a href='https://zh.wikipedia.org/wiki/%E6%A0%B8%E5%90%88%E6%88%90' target='_blank' rel='noopener noreferrer'>核合成 - 维基百科（元素起源的科学总称）</a><br> 
+<a href='https://zh.wikipedia.org/wiki/%E5%A4%AA%E5%88%9D%E6%A0%B8%E5%90%88%E6%88%90' target='_blank' rel='noopener noreferrer'>原初核合成 - 维基百科（大爆炸时期的元素形成）</a><br> 
+<a href='https://zh.wikipedia.org/wiki/%E6%81%86%E6%98%9F%E6%A0%B8%E5%90%88%E6%88%90' target='_blank' rel='noopener noreferrer'>恒星核合成 - 维基百科（恒星内部的元素形成）</a>
+
+">
+    <div class="content">
+        <img src="../images/恒星内部核聚变示意图.jpg" alt="" class="img">
+        <h2 class="content-tittle">元素起源</h2>
+        <p class="content-desc">宇宙最初只有氢和氦，恒星内部通过核聚变创造了丰富的元素。</p>
+    </div>
+</div>
+
+
+
+<div class="item" data-text="宇宙结构形成"
+data-detail="<br>
+&nbsp;&nbsp;宇宙结构形成是现代宇宙学旨在解释宇宙中物质如何从均匀分布演化成今天我们所见的、由星系、星系团、超星系团以及巨大空洞组成的网状结构（即宇宙网或大尺度结构）的过程。<br><br>
+&nbsp;&nbsp;这个过程的起点是宇宙微波背景辐射（CMB）中观测到的极微小的密度涨落（温度各向异性）。宇宙学家相信，这些微小的涨落是宇宙在极早期（宇宙暴胀时期）的量子波动被放大所致，它们是后来所有宇宙结构的“种子”。<br><br>
+&nbsp;&nbsp;结构形成遵循一个被称为“等级聚集”的模型：在引力的作用下，物质聚集在密度略高的区域。这个过程的驱动力主要来自于暗物质。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1. 暗物质主导：在宇宙大爆炸后不久，暗物质的引力塌缩开始。由于暗物质不与光发生电磁作用，它能够独立于光子的压力而先行聚集，形成暗物质晕（Dark Matter Halo）。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2. 重子物质落入：大爆炸后约38万年，宇宙变得透明，普通的重子物质（质子、电子等）不再被光子频繁散射。它们被已经形成的暗物质晕的引力所吸引，落入其中，加速了结构的形成。<br><br>
+&nbsp;&nbsp;随着时间的推移，小的暗物质晕通过并合和吸积不断增长，形成了更大的结构，遵循从小到大、自下而上的演化路径：矮星系、星系 、星系群、星系团、超星系团、宇宙纤维状结构和空洞，最终形成了巨大的“宇宙网”。<br><br>
+&nbsp;&nbsp;目前被广泛接受的模型是$\Lambda$CDM模型（宇宙学常数和冷暗物质模型）。该模型成功地解释了CMB的涨落特性以及今天观测到的宇宙大尺度结构的分布。研究宇宙结构不仅有助于我们理解星系的起源和演化，更是探索暗物质和暗能量本质的关键途径。<br><br>
+相关信息：<br>
+<a href='https://zh.wikipedia.org/wiki/%E7%B5%90%E6%A7%8B%E5%BD%A2%E6%88%90' target='_blank' rel='noopener noreferrer'>结构形成 - 维基百科</a><br> 
+<a href='https://zh.wikipedia.org/wiki/%E5%A4%A7%E5%B0%BA%E5%BA%A6%E7%B5%90%E6%A7%8B' target='_blank' rel='noopener noreferrer'>宇宙大尺度结构 - 维基百科</a><br> 
+<a href='https://zh.wikipedia.org/wiki/%CE%9BCDM%E6%A8%A1%E5%9E%8B' target='_blank' rel='noopener noreferrer'>CDM模型 - 维基百科</a>
+
+">
+    <div class="content">
+        <img src="../images/宇宙大尺度结构分布图.jpg" alt="" class="img">
+        <h2 class="content-tittle">宇宙结构形成</h2>
+        <p class="content-desc">宇宙早期物质聚集，最终形成了星系和各种宇宙结构。</p>
+    </div>
+</div>
+
+
+
+    <!-- 弹窗详情 -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeDetail()" aria-label="关闭"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-title" id="modalTitle"></div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+    (function ($) {
+        $.fn.timeline = function () {
+            var selectors = {
+                id: $(this),
+                item: $(this).find(".item"),
+                activeClass: "item--active",
+                img: ".img"
+            };
+            selectors.item.eq(0).addClass(selectors.activeClass);
+            selectors.id.css(
+                "background-image",
+                "url(" + selectors.item.first().find(selectors.img).attr("src") + ")"
+            );
+            var itemlength = selectors.item.length;
+            $(window).scroll(function () {
+                var max, min, window_height = $(window).height();
+                var pos = $(this).scrollTop();
+                selectors.item.each(function (i) {
+                    min = $(this).offset().top;
+                    max = $(this).height() + $(this).offset().top;
+                    var that = $(this);
+                    if (i == itemlength - 2 && pos > min + $(this).height() / 2) {
+                        selectors.item.removeClass(selectors.activeClass);
+                        selectors.id.css(
+                            "background-image",
+                            "url(" + selectors.item.last().find(selectors.img).attr("src") + ")"
+                        );
+                        selectors.item.last().addClass(selectors.activeClass);
+                    }
+                    else if (
+                    pos <= max + window_height * 0.3 && pos >= min - window_height * 0.3) {
+                        selectors.id.css(
+                            "background-image",
+                            "url(" + $(this).find(selectors.img).attr("src") + ")"
+                        );
+                        selectors.item.removeClass(selectors.activeClass);
+                        $(this).addClass(selectors.activeClass);
+                    }
+                });
+            });
+        };
+    }(jQuery))
+
+    $(document).ready(function () {
+        $("#shell").timeline();
+        adjustTimelineHeight();
+        function adjustTimelineHeight() {
+            var windowHeight = $(window).height();
+            var timelineHeight = $('.timeline').outerHeight();
+            var lastItemOffset = $('.item').last().offset().top;
+            var requiredSpace = windowHeight;
+            if (lastItemOffset + requiredSpace > timelineHeight) {
+                var additionalSpace = (lastItemOffset + requiredSpace) - timelineHeight;
+                $('.timeline').css('padding-bottom', additionalSpace + 'px');
+            }
+        }
+        $(window).resize(function () {
+            adjustTimelineHeight();
+        });
+
+        // 点击图片弹窗，内容用 data-detail，自动分栏加栏目标题
+        $(".timeline .img").on("click", function(e){
+            e.preventDefault();
+            var item = $(this).closest(".item");
+            var title = item.find(".content-tittle").text();
+            var imgSrc = $(this).attr("src");
+            var detail = item.attr("data-detail") || item.find(".content-desc").html();
+
+            // 分栏处理
+            var intro = "";
+            var info = "";
+            if (detail.indexOf("相关信息：") > -1) {
+                intro = detail.split("相关信息：")[0];
+                info = detail.split("相关信息：")[1];
+            } else {
+                intro = detail;
+                info = "";
+            }
+            var modalBody = "<img src='"+imgSrc+"' style='max-width:80%;margin:18px auto;display:block;border-radius:12px;box-shadow:0 2px 16px #3b86ff99;'>"
+                + "<div class='modal-section-title modal-intro-title'>详细介绍</div>"
+                + intro
+                + (info ? "<div class='modal-section-title modal-info-title'>相关信息</div>" + info : "");
+            $("#modalTitle").html(title);
+            $("#modalBody").html(modalBody);
+            $("#detailModal").css("display","flex");
+            $("body").css("overflow","hidden");
+        });
+    });
+
+    // 弹窗关闭
+    function closeDetail() {
+        document.getElementById('detailModal').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeDetail();
+    });
+    </script>
+</body>
+</html> 
