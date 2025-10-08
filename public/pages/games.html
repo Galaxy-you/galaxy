@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>趣味游戏</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
     * {
       margin: 0;
@@ -44,52 +45,82 @@
       z-index: 1;
     }
     
-    .game-header {
-      position: relative;
-      padding: 30px 40px;
-      z-index: 10;
+    /* 统一的导航栏样式 */
+    .nav-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(100,181,246,0.3);
+    }
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      max-width: 1400px;
-      margin: 0 auto;
+      padding: 0 30px;
     }
     
-    .game-title {
-      font-size: 36px;
+    .logo {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo-img {
+      height: 40px;
+      width: auto;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    
+    .logo-text {
+      font-size: 22px;
+      font-weight: bold;
+      color: #64b5f6;
+      vertical-align: middle;
+    }
+    
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+    
+    .nav-link {
+      color: #e0e6ed;
+      text-decoration: none;
+      transition: color 0.3s, text-shadow 0.3s;
+      font-size: 16px;
+    }
+    
+    .nav-link:hover {
+      color: #90caf9;
+      text-shadow: 0 0 5px #64b5f6;
+    }
+    
+    /* 游戏内容区域 - 缩小间距 */
+    .game-content {
+      margin-top: 70px;
+      padding: 15px 20px 20px;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .page-title {
+      text-align: center;
+      font-size: 28px;
       color: #fff;
       font-weight: bold;
       text-shadow: 0 4px 20px rgba(100, 200, 255, 0.5);
-      letter-spacing: 4px;
-    }
-    
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 30px;
-      font-size: 16px;
-      color: #fff;
-      background: rgba(100, 200, 255, 0.15);
-      backdrop-filter: blur(15px);
-      border-radius: 50px;
-      text-decoration: none;
-      border: 2px solid rgba(100, 200, 255, 0.3);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-      font-weight: 500;
-    }
-    
-    .back-link:hover {
-      background: rgba(100, 200, 255, 0.25);
-      border-color: rgba(100, 200, 255, 0.5);
-      box-shadow: 0 6px 30px rgba(100, 200, 255, 0.4);
-      transform: translateY(-2px);
-    }
-    
-    .back-link::before {
-      content: '←';
-      font-size: 20px;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
     }
     
     .game-carousel-container {
@@ -97,9 +128,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: calc(100vh - 180px);
-      padding: 20px;
-      z-index: 10;
+      padding: 15px 10px;
+      min-height: auto;
     }
     
     .arrow-btn {
@@ -107,16 +137,16 @@
       backdrop-filter: blur(15px);
       border: 2px solid rgba(100, 200, 255, 0.4);
       color: #fff;
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      margin: 0 20px;
+      margin: 0 15px;
       cursor: pointer;
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-size: 24px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
       position: relative;
       flex-shrink: 0;
@@ -138,21 +168,21 @@
     }
     
     .game-card {
-      width: 680px;
-      max-width: 90vw;
+      width: 580px;
+      max-width: 85vw;
       background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(25px);
-      border-radius: 30px;
+      border-radius: 25px;
       border: 2px solid rgba(100, 200, 255, 0.3);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 
-                  0 0 80px rgba(100, 200, 255, 0.1) inset;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4), 
+                  0 0 60px rgba(100, 200, 255, 0.1) inset;
       text-align: center;
-      padding: 40px 35px;
+      padding: 30px 25px;
       display: flex;
       flex-direction: column;
       align-items: center;
       transition: all 0.4s ease;
-      min-height: 520px;
+      min-height: 420px;
       position: relative;
       overflow: hidden;
     }
@@ -174,8 +204,8 @@
     }
     
     .game-card:hover {
-      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5), 
-                  0 0 100px rgba(100, 200, 255, 0.2) inset;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 
+                  0 0 80px rgba(100, 200, 255, 0.2) inset;
       transform: translateY(-5px);
       border-color: rgba(100, 200, 255, 0.5);
     }
@@ -211,29 +241,29 @@
     }
     
     .game-card img {
-      width: 500px;
-      height: 300px;
+      width: 400px;
+      height: 240px;
       object-fit: cover;
-      border-radius: 20px;
-      margin-bottom: 25px;
+      border-radius: 18px;
+      margin-bottom: 18px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4),
-                  0 0 60px rgba(100, 200, 255, 0.2);
-      border: 3px solid rgba(100, 200, 255, 0.4);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4),
+                  0 0 50px rgba(100, 200, 255, 0.2);
+      border: 2px solid rgba(100, 200, 255, 0.4);
       transition: all 0.4s ease;
     }
     
     .game-card img:hover {
       transform: scale(1.05);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5),
-                  0 0 80px rgba(100, 200, 255, 0.4);
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5),
+                  0 0 70px rgba(100, 200, 255, 0.4);
       border-color: rgba(100, 200, 255, 0.6);
     }
     
     .game-card h2 {
-      font-size: 32px;
+      font-size: 26px;
       color: #fff;
-      margin: 8px 0 15px 0;
+      margin: 5px 0 12px 0;
       letter-spacing: 2px;
       text-shadow: 0 2px 15px rgba(100, 200, 255, 0.5);
       font-weight: bold;
@@ -241,23 +271,23 @@
     
     .game-card p {
       color: rgba(255, 255, 255, 0.9);
-      font-size: 17px;
-      margin-bottom: 25px;
+      font-size: 15px;
+      margin-bottom: 18px;
       margin-top: 0;
-      min-height: 50px;
-      line-height: 1.7;
-      max-width: 560px;
+      min-height: 40px;
+      line-height: 1.6;
+      max-width: 500px;
     }
     
     .game-card .game-link {
       display: inline-block;
-      padding: 14px 45px;
-      font-size: 18px;
+      padding: 12px 38px;
+      font-size: 16px;
       color: #fff;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border-radius: 50px;
       text-decoration: none;
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
       transition: all 0.3s ease;
       font-weight: 600;
       letter-spacing: 1px;
@@ -283,8 +313,8 @@
     
     .game-card .game-link:hover {
       background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-      box-shadow: 0 10px 35px rgba(102, 126, 234, 0.6);
-      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(102, 126, 234, 0.6);
+      transform: translateY(-2px);
       border-color: rgba(255, 255, 255, 0.5);
     }
     
@@ -293,23 +323,23 @@
     }
     
     .carousel-indicators {
-      position: absolute;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
       display: flex;
-      gap: 15px;
-      z-index: 11;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+      padding: 10px 18px;
       background: rgba(0, 0, 0, 0.3);
-      padding: 12px 20px;
       border-radius: 50px;
       backdrop-filter: blur(10px);
       border: 1px solid rgba(100, 200, 255, 0.2);
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
     }
     
     .indicator-dot {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.3);
       border: 2px solid rgba(255, 255, 255, 0.5);
@@ -330,85 +360,107 @@
     }
     
     @media (max-width: 900px) {
-      .game-header {
-        padding: 25px 20px;
-        flex-direction: column;
-        gap: 15px;
+      .nav-container {
+        padding: 0 20px;
       }
-      .game-title {
-        font-size: 28px;
-      }
-      .game-card {
-        width: 95vw;
-        padding: 35px 25px;
-        min-height: 500px;
-      }
-      .game-card img {
-        width: 240px;
-        height: 240px;
-      }
-      .arrow-btn {
-        width: 50px;
-        height: 50px;
-        margin: 0 10px;
-        background: rgba(100, 200, 255, 0.15);
-      }
-    }
-    
-    @media (max-width: 600px) {
-      .game-header {
-        padding: 20px 15px;
-      }
-      .game-title {
+      .page-title {
         font-size: 24px;
       }
       .game-card {
-        padding: 30px 20px;
-        min-height: 480px;
+        width: 90vw;
+        padding: 25px 20px;
+        min-height: 400px;
       }
       .game-card img {
-        width: 200px;
+        width: 300px;
         height: 200px;
-      }
-      .game-card h2 {
-        font-size: 26px;
-      }
-      .game-card p {
-        font-size: 16px;
       }
       .arrow-btn {
         width: 45px;
         height: 45px;
-        font-size: 24px;
+        margin: 0 10px;
+        font-size: 22px;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .logo-text {
+        font-size: 18px;
+      }
+      .logo-img {
+        height: 35px;
+      }
+      .nav-menu {
+        gap: 15px;
+      }
+      .nav-link {
+        font-size: 14px;
+      }
+      .page-title {
+        font-size: 20px;
+        letter-spacing: 2px;
+      }
+      .game-card {
+        padding: 20px 15px;
+        min-height: 380px;
+      }
+      .game-card img {
+        width: 250px;
+        height: 180px;
+      }
+      .game-card h2 {
+        font-size: 22px;
+      }
+      .game-card p {
+        font-size: 14px;
+      }
+      .arrow-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
         margin: 0 8px;
       }
       .carousel-indicators {
-        bottom: 20px;
-        padding: 10px 15px;
-        gap: 12px;
+        margin-top: 15px;
+        padding: 8px 15px;
+        gap: 10px;
       }
     }
   </style>
 </head>
 <body>
   <canvas id="stars"></canvas>
-  <div class="game-header">
-    <span class="game-title">✨ 趣味游戏 ✨</span>
-    <a class="back-link" href="../index.html">返回主页</a>
+  
+  <!-- 统一导航栏 -->
+  <header class="nav-header">
+    <nav class="nav-container">
+      <a href="../index.html" class="logo">
+        <img src="../images/logo.png" alt="星河探索 Logo" class="logo-img"/>
+        <span class="logo-text">趣味游戏</span>
+      </a>
+      <div class="nav-menu">
+        <a href="../index.html" class="nav-link">返回首页</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- 游戏内容 -->
+  <div class="game-content">
+    <div class="game-carousel-container">
+      <button class="arrow-btn" id="arrow-left" aria-label="上一项">
+        <span class="arrow-content">‹</span>
+      </button>
+      <div class="game-card" id="game-card"></div>
+      <button class="arrow-btn" id="arrow-right" aria-label="下一项">
+        <span class="arrow-content">›</span>
+      </button>
+    </div>
+    
+    <div class="carousel-indicators" id="indicators"></div>
   </div>
-  <div class="game-carousel-container">
-    <button class="arrow-btn" id="arrow-left" aria-label="上一项">
-      <span class="arrow-content">‹</span>
-    </button>
-    <div class="game-card" id="game-card"></div>
-    <button class="arrow-btn" id="arrow-right" aria-label="下一项">
-      <span class="arrow-content">›</span>
-    </button>
-  </div>
-  <div class="carousel-indicators" id="indicators"></div>
   
   <script>
-    // 优化的星星效果 - 减少数量，提高性能
+    // 优化的星星效果
     const starCount = 600;
     const starArr = [];
     let windowWidth, windowHeight, context;
@@ -535,14 +587,14 @@
       const g = games[idx];
       
       card.classList.remove('slide-in-right', 'slide-in-left');
-      void card.offsetWidth; // 触发重排
+      void card.offsetWidth;
       card.classList.add(lastDirection === 'right' ? 'slide-in-right' : 'slide-in-left');
       
       card.innerHTML = `
         <img src="${g.img}" alt="${g.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23667eea%22 width=%22280%22 height=%22280%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2224%22 fill=%22white%22%3E${g.title}%3C/text%3E%3C/svg%3E'">
         <h2>${g.title}</h2>
         <p>${g.desc}</p>
-        ${g.link ? `<a class="game-link" href="${g.link}">${g.linkText}</a>` : '<p style="color: rgba(255,255,255,0.6); font-style: italic; font-size: 18px;">Coming Soon...</p>'}
+        ${g.link ? `<a class="game-link" href="${g.link}">${g.linkText}</a>` : '<p style="color: rgba(255,255,255,0.6); font-style: italic; font-size: 16px;">Coming Soon...</p>'}
       `;
       
       document.querySelectorAll('.indicator-dot').forEach((dot, i) => {

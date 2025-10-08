@@ -2,19 +2,21 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
   <title>星河探索</title>
   <link rel="stylesheet" href="css/index.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
 </head>
 <body>
-  <video autoplay muted loop id="bg-video">
+  <!-- 视频背景仅在大屏幕显示 -->
+  <video autoplay muted loop playsinline id="bg-video" class="desktop-only">
     <source src="videos/space-bg.mp4" type="video/mp4"/>
     您的浏览器不支持视频背景
   </video>
   <div class="video-overlay"></div> 
   <div class="stars-bg"></div>
+  
   <header class="nav-header">
     <nav class="nav-container">
       <a href="#" class="logo">
@@ -52,9 +54,9 @@
         <div class="module-gradient"></div>
         <div class="module-content">
           <i class="module-icon fas fa-rocket"></i>
-          <h2 class="module-title">最新时讯</h2>
+          <h2 class="module-title">星河时讯</h2>
           <p class="module-desc">掌握天文发现、太空任务、天象预报的最新动态</p>
-          <button class="explore-btn">开始了解</button>
+          <a class="explore-btn" href="pages/news.html">开始了解</a>
         </div>
       </div>
       <div class="module-card fade-in">
@@ -65,6 +67,7 @@
           <h2 class="module-title">趣味游戏</h2>
           <p class="module-desc">通过互动游戏寓教于乐，探索星空奥秘和星座识别</p>
           <a class="explore-btn" href="pages/games.html">开始体验</a>
+        </div>
       </div>
     </section>
 
@@ -79,7 +82,7 @@
         <div class="ai-input-container">
           <input type="text" class="ai-input" placeholder="请输入您的天文问题..." id="ai-question-input"/>
           <button class="ai-submit-btn" onclick="submitQuestion()">
-            <i class="fas fa-paper-plane"></i> 发送
+            <i class="fas fa-paper-plane"></i> <span class="btn-text">发送</span>
           </button>
         </div>
         <div id="ai-response" class="ai-response" style="display: none;">
@@ -106,6 +109,7 @@
   ];
   const statsContainer = document.querySelector('.explore-stats');
   let currentIndex = 0;
+  
   function animateNumber(el, target, duration = 1200) {
     const start = 0;
     const startTime = performance.now();
@@ -121,10 +125,11 @@
     }
     requestAnimationFrame(update);
   }
+  
   function renderStat(data) {
     statsContainer.innerHTML = `
       <div class="explore-title">${data.title}</div>
-      <div style="display:flex;align-items:center;justify-content:center;">
+      <div class="explore-value-container">
         <span class="explore-number"></span>
         <span class="explore-unit">${data.unit}</span>
       </div>
@@ -133,10 +138,12 @@
     const numberEl = statsContainer.querySelector('.explore-number');
     animateNumber(numberEl, data.value);
   }
+  
   function nextStat() {
     renderStat(statsData[currentIndex]);
     currentIndex = (currentIndex + 1) % statsData.length;
   }
+  
   // 页面加载后开始轮播
   window.addEventListener('DOMContentLoaded', function() {
     nextStat();

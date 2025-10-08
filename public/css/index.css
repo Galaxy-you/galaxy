@@ -302,6 +302,12 @@ body {
   line-height: 1.6;
   margin-top: 5px;
 }
+
+#modules,
+#ai {
+  scroll-margin-top: 140px; /* 根据导航栏实际高度调整，建议 80-120px */
+}
+
 /* 响应式设计 */
 @media (max-width: 1200px) {
   .modules-grid { gap: 24px; }
@@ -438,4 +444,309 @@ body {
 /* 加载动画 */
 .loading .message-content {
   opacity: 0.7;
+}
+
+
+/* 移动端响应式样式 */
+
+/* 平板设备 (768px 以下) */
+@media screen and (max-width: 768px) {
+  /* 隐藏视频背景以提升性能 */
+  .desktop-only {
+    display: none !important;
+  }
+  
+  /* 导航栏 */
+  .nav-header {
+    padding: 0.5rem 0;
+  }
+  
+  .nav-container {
+    padding: 0 1rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .logo {
+    font-size: 1.2rem;
+  }
+  
+  .logo-img {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .nav-menu {
+    gap: 1rem;
+  }
+  
+  .nav-link {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  /* 探测数据区域 */
+  .explore-stats {
+    padding: 2rem 1rem;
+    min-height: 200px;
+  }
+  
+  .explore-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .explore-value-container {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .explore-number {
+    font-size: 2rem;
+    word-break: break-all;
+  }
+  
+  .explore-unit {
+    font-size: 1.2rem;
+  }
+  
+  .explore-desc {
+    font-size: 0.9rem;
+    padding: 0 1rem;
+    line-height: 1.6;
+  }
+  
+  /* 功能模块网格 */
+  .modules-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 2rem 1rem;
+  }
+  
+  .module-card {
+    min-height: 300px;
+  }
+  
+  .module-icon {
+    font-size: 2.5rem;
+  }
+  
+  .module-title {
+    font-size: 1.5rem;
+  }
+  
+  .module-desc {
+    font-size: 0.95rem;
+    padding: 0 1rem;
+  }
+  
+  /* AI助手区域 */
+  .ai-chat-section {
+    padding: 2rem 1rem;
+  }
+  
+  .ai-container {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+  
+  .ai-title {
+    font-size: 1.5rem;
+  }
+  
+  .ai-avatar {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .ai-helper-desc {
+    font-size: 0.95rem;
+  }
+  
+  .ai-input-container {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .ai-input {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.8rem 1rem;
+  }
+  
+  .ai-submit-btn {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+  }
+  
+  .ai-response {
+    font-size: 0.95rem;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+}
+
+/* 手机设备 (480px 以下) */
+@media screen and (max-width: 480px) {
+  /* 导航栏更紧凑 */
+  .nav-container {
+    padding: 0 0.75rem;
+  }
+  
+  .logo-text {
+    font-size: 1rem;
+  }
+  
+  .logo-img {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .nav-menu {
+    gap: 0.5rem;
+  }
+  
+  .nav-link {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.6rem;
+  }
+  
+  /* 探测数据 */
+  .explore-stats {
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .explore-title {
+    font-size: 1.3rem;
+  }
+  
+  .explore-number {
+    font-size: 1.8rem;
+  }
+  
+  .explore-unit {
+    font-size: 1rem;
+  }
+  
+  .explore-desc {
+    font-size: 0.85rem;
+    padding: 0 0.5rem;
+  }
+  
+  /* 模块卡片 */
+  .modules-grid {
+    padding: 1.5rem 0.75rem;
+    gap: 1.25rem;
+  }
+  
+  .module-card {
+    min-height: 280px;
+  }
+  
+  .module-icon {
+    font-size: 2rem;
+  }
+  
+  .module-title {
+    font-size: 1.3rem;
+  }
+  
+  .module-desc {
+    font-size: 0.9rem;
+    padding: 0 0.75rem;
+  }
+  
+  .explore-btn {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.5rem;
+  }
+  
+  /* AI助手 */
+  .ai-chat-section {
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .ai-container {
+    padding: 1.25rem;
+  }
+  
+  .ai-title {
+    font-size: 1.3rem;
+  }
+  
+  .ai-avatar {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .ai-helper-desc {
+    font-size: 0.9rem;
+  }
+  
+  .ai-input {
+    font-size: 0.95rem;
+    padding: 0.7rem 0.9rem;
+  }
+  
+  .ai-submit-btn {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+  
+  /* 隐藏按钮文字，只显示图标 */
+  .ai-submit-btn .btn-text {
+    display: none;
+  }
+  
+  .response-header {
+    font-size: 0.95rem;
+  }
+  
+  #ai-answer {
+    font-size: 0.9rem;
+  }
+}
+
+/* 超小屏幕优化 (360px 以下) */
+@media screen and (max-width: 360px) {
+  .explore-number {
+    font-size: 1.5rem;
+  }
+  
+  .module-title {
+    font-size: 1.2rem;
+  }
+  
+  .module-desc {
+    font-size: 0.85rem;
+  }
+  
+  .ai-title {
+    font-size: 1.2rem;
+  }
+}
+
+/* 横屏优化 */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .hero-section {
+    min-height: auto;
+    padding: 2rem 0;
+  }
+  
+  .explore-stats {
+    min-height: auto;
+    padding: 1.5rem 1rem;
+  }
+  
+  .module-card {
+    min-height: 250px;
+  }
+  
+  .ai-container {
+    max-width: 90%;
+  }
 }
